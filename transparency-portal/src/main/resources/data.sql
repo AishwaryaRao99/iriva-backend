@@ -1,3 +1,16 @@
+
+--------------------------------------------- USERS TABLE -------------------------------------------------------
+INSERT INTO users (username, email, password, created_at, updated_at) 
+VALUES ('john_doe', 'john@example.com', 
+        '$2a$12$nnGhL10KSLiVKZaS0.ktgeJfFcCRLfcvQMU5XfnJDxLF4PLZQSN2e', 
+        NOW(), NOW());
+
+INSERT INTO users (username, email, password, created_at, updated_at) 
+VALUES ('admin', 'admin@example.com', 
+        '$2a$12$nnGhL10KSLiVKZaS0.ktgeJfFcCRLfcvQMU5XfnJDxLF4PLZQSN2e', 
+        NOW(), NOW());
+
+----------------------------------------------------- PRODUCTS TABLE -----------------------------------------------------------
 -- ========== SKINCARE PRODUCTS ==========
 
 -- Product 1: Burt's Bees Very Volumizing Pomegranate Shampoo
