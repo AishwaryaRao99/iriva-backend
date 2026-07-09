@@ -3,6 +3,7 @@ package com.aishwarya.ethical.transparency_portal.modules.user.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -45,8 +46,8 @@ public class UserService {
     }
 
     
-    public String encodePassword(String rawPassword) {
-        return passwordEncoder.encode(rawPassword);
+   PasswordEncoder encodePassword(String rawPassword) {
+    	return new BCryptPasswordEncoder(12);
     }
 
     

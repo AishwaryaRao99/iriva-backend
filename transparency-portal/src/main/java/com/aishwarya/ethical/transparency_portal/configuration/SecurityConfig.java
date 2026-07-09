@@ -3,13 +3,11 @@ package com.aishwarya.ethical.transparency_portal.configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -28,9 +26,6 @@ public class SecurityConfig {
 
 	@Autowired
 	private JwtAuthenticationFilter jwtAuthenticationFilter;
-    
-	@Autowired
-	private com.aishwarya.ethical.transparency_portal.security.CustomUserDetailsService customUserDetailsService;
 
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -69,11 +64,7 @@ public class SecurityConfig {
 				.headers(headers -> headers.frameOptions(frame -> frame.disable()))
 
 				// Stateless session management because we use JWTs
-				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                
-				// Register the authentication provider (uses UserDetailsService + PasswordEncoder)
-				.authenticationProvider(authenticationProvider())
-                
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))                
 				;
 
 		// Add the JWT filter before Spring Security's username/password filter
@@ -83,10 +74,10 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public AuthenticationProvider authenticationProvider() {
-		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-		provider.setUserDetailsService(customUserDetailsService);
-		provider.setPasswordEncoder(passwordEncoder());
-		return provider;
+	AuthenticationManager authenticationManager(
+	        AuthenticationConfiguration configuration)
+	        throws Exception {
+
+	    return configuration.getAuthenticationManager();
 	}
 }

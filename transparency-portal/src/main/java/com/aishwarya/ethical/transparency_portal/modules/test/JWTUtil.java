@@ -9,9 +9,9 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
 @Component
@@ -50,7 +50,7 @@ public class JWTUtil {
 	// Extract username/subject from token
 	public String getUsernameFromToken(String token) {
 		try {
-			Claims claims = Jwts.parserBuilder()
+			Claims claims = Jwts.parser()
 					.setSigningKey(getSigningKey())
 					.build()
 					.parseClaimsJws(token)
@@ -66,7 +66,7 @@ public class JWTUtil {
 	@SuppressWarnings("unchecked")
 	public java.util.List<String> getRolesFromToken(String token) {
 		try {
-			Claims claims = Jwts.parserBuilder()
+			Claims claims = Jwts.parser()
 					.setSigningKey(getSigningKey())
 					.build()
 					.parseClaimsJws(token)
@@ -85,7 +85,7 @@ public class JWTUtil {
 	// Validate token signature and expiration
 	public boolean validateToken(String token) {
 		try {
-			Jwts.parserBuilder()
+			Jwts.parser()
 					.setSigningKey(getSigningKey())
 					.build()
 					.parseClaimsJws(token);
