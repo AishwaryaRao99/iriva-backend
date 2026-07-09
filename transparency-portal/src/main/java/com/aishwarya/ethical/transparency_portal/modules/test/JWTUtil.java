@@ -51,9 +51,9 @@ public class JWTUtil {
 	public String getUsernameFromToken(String token) {
 		try {
 			Claims claims = Jwts.parser()
-					.setSigningKey(getSigningKey())
+					.verifyWith(getSigningKey())
 					.build()
-					.parseClaimsJws(token)
+					.parseSignedClaims(token)
 					.getBody();
 
 			return claims.getSubject();
@@ -63,21 +63,20 @@ public class JWTUtil {
 	}
 
 	// Extract roles claim (assumes it was stored as a Collection<String>)
-	@SuppressWarnings("unchecked")
 	public java.util.List<String> getRolesFromToken(String token) {
 		try {
 			Claims claims = Jwts.parser()
-					.setSigningKey(getSigningKey())
+					.verifyWith(getSigningKey())
 					.build()
-					.parseClaimsJws(token)
-					.getBody();
+					.parseSignedClaims(token)
+					.getPayload();
 
 			Object roles = claims.get("roles");
 			if (roles instanceof java.util.List) {
 				return (java.util.List<String>) roles;
 			}
 			return java.util.Collections.emptyList();
-		} catch (JwtException e) {
+		} catch (JwtException | IllegalArgumentException e) {
 			return java.util.Collections.emptyList();
 		}
 	}
@@ -86,9 +85,9 @@ public class JWTUtil {
 	public boolean validateToken(String token) {
 		try {
 			Jwts.parser()
-					.setSigningKey(getSigningKey())
+					.verifyWith(getSigningKey())
 					.build()
-					.parseClaimsJws(token);
+					.parseSignedClaims(token);
 			return true;
 		} catch (JwtException e) {
 			return false;
