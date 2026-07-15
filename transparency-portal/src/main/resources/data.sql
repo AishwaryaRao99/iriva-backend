@@ -1,13 +1,13 @@
 
 --------------------------------------------- USERS TABLE -------------------------------------------------------
-INSERT INTO users (username, email, password, created_at, updated_at) 
-VALUES ('john_doe', 'john@example.com', 
-        '$2a$12$nnGhL10KSLiVKZaS0.ktgeJfFcCRLfcvQMU5XfnJDxLF4PLZQSN2e', 
+INSERT INTO users (username, role, email, password, created_at, updated_at) 
+VALUES ('john_doe', 'USER', 'john@example.com', 
+        '$2a$12$O718yic3jvorcrL9cmaRjOJWsr0W0UIFirtysqMsM9mrzgwJ1xa0.', 
         NOW(), NOW());
 
-INSERT INTO users (username, email, password, created_at, updated_at) 
-VALUES ('admin', 'admin@example.com', 
-        '$2a$12$nnGhL10KSLiVKZaS0.ktgeJfFcCRLfcvQMU5XfnJDxLF4PLZQSN2e', 
+INSERT INTO users (username, role, email, password, created_at, updated_at) 
+VALUES ('admin', 'ADMIN', 'admin@example.com', 
+        '$2a$12$O718yic3jvorcrL9cmaRjOJWsr0W0UIFirtysqMsM9mrzgwJ1xa0.', 
         NOW(), NOW());
 
 ----------------------------------------------------- PRODUCTS TABLE -----------------------------------------------------------
@@ -17,8 +17,8 @@ VALUES ('admin', 'admin@example.com',
 INSERT INTO PRODUCTS (product_name, DESCRIPTION, IMAGE_URL, BRAND, ETHICAL_SCORE, TRANSPARENCY_SCORE, CATEGORY)
 VALUES ('Burt''s Bees Very Volumizing Pomegranate Shampoo',
 'Natural shampoo made with pomegranate seed oil, free of sulfates and parabens. Made with 99.6% natural ingredients.',
-'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=500&q=80',
-'Burt''s Bees', 9.1, 9.3, 'SKINCARE');
+	'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=500&q=80',
+	'Burt''s Bees', 9.1, 9.3, 'SKINCARE');
 
 
 INSERT INTO ETHICAL_ITEMS (product_id, title, description, icon) VALUES

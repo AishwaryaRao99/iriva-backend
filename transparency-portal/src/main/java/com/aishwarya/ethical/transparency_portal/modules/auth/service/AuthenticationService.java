@@ -1,6 +1,5 @@
 package com.aishwarya.ethical.transparency_portal.modules.auth.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -10,22 +9,26 @@ import org.springframework.stereotype.Service;
 import com.aishwarya.ethical.transparency_portal.exception_handling.UnAuthorizedException;
 import com.aishwarya.ethical.transparency_portal.modules.auth.dto.LoginRequest;
 import com.aishwarya.ethical.transparency_portal.modules.auth.dto.LoginResponse;
-import com.aishwarya.ethical.transparency_portal.modules.test.JWTUtil;
 import com.aishwarya.ethical.transparency_portal.modules.user.model.CustomUserDetails;
+import com.aishwarya.ethical.transparency_portal.security.JWTUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
 public class AuthenticationService {
-
-	@Autowired
-	private JWTUtil jwtUtil;
+	
+	private final JWTUtil jwtUtil;
 
 	@Value("${jwt.expiration}")
 	private long tokenExpirationTime;
+	
+	private final AuthenticationManager authenticationManager;
 
-	private AuthenticationManager authenticationManager;
+    public AuthenticationService(JWTUtil jwtUtil, AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
+    }
 
 	public LoginResponse authenticate(LoginRequest loginRequest) {
 

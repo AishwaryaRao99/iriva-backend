@@ -1,6 +1,5 @@
 package com.aishwarya.ethical.transparency_portal.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,12 +12,15 @@ import com.aishwarya.ethical.transparency_portal.modules.user.service.UserServic
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    private UserService userService;
-
+    private final UserService userService;
+    
+    public CustomUserDetailsService(UserService userService) {
+    	this.userService = userService;
+    }
+    
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserModel user = userService.findByUsernameOrEmail(username);
+        UserModel user = userService.getUserDetailsByUsernameOrEmail(username);
 
         return new CustomUserDetails(user);
     }

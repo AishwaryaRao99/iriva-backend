@@ -17,11 +17,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    
+    public UserService(UserRepository userRepository) {
+    	this.userRepository = userRepository;
+    }
 
     public UserModel findByUsername(String username) {
         return userRepository.findByUsername(username)
@@ -39,18 +39,7 @@ public class UserService {
                     return new UserNotFoundException("User not found with email: " + email);
                 });
     }
-
- 
-    public boolean verifyPassword(String rawPassword, String encodedPassword) {
-        return passwordEncoder.matches(rawPassword, encodedPassword);
-    }
-
-    
-   PasswordEncoder encodePassword(String rawPassword) {
-    	return new BCryptPasswordEncoder(12);
-    }
-
-    
+  
     public String getUser(Long id) {
         if (id == 0) {
             log.warn("Invalid user ID: {}", id);
@@ -60,7 +49,7 @@ public class UserService {
     }
 
     
-    public UserModel findByUsernameOrEmail(String usernameOrEmail) {
+    public UserModel getUserDetailsByUsernameOrEmail(String usernameOrEmail) {
         Optional<UserModel> user = userRepository.findByUsername(usernameOrEmail);
         
         if (user.isPresent()) {

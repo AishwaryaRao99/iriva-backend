@@ -1,4 +1,4 @@
-package com.aishwarya.ethical.transparency_portal.modules.test;
+package com.aishwarya.ethical.transparency_portal.security;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;

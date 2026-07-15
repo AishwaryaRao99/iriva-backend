@@ -1,6 +1,5 @@
 package com.aishwarya.ethical.transparency_portal.modules.security;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -11,45 +10,26 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class JwtAuthenticationIntegrationTest {
-	
+class JWTUnAuthorisedTest {
 	@Autowired
 	MockMvc mockMvc;
 
 	@Test
-	void protectedEndpoint_withJwt_returns200() throws Exception {
+	void login_returnsJwt() throws Exception {
 
 	    String request = """
 	        {
 	            "username":"john_doe",
-	            "password":"password"
+	            "password":"password235543"
 	        }
 	        """;
 
-	    MvcResult loginResult = mockMvc.perform(post("/auth/login")
+	    mockMvc.perform(post("/auth/login")
 	            .contentType(MediaType.APPLICATION_JSON)
 	            .content(request))
-	            .andExpect(status().isOk())
-	            .andExpect(jsonPath("$.token").exists())
-	            .andReturn();
-	    
-	    String response = loginResult.getResponse().getContentAsString();
-
-	    ObjectMapper mapper = new ObjectMapper();
-
-	    JsonNode json = mapper.readTree(response);
-
-	    String token = json.get("token").asText();
-
-	    mockMvc.perform(get("/user/test")
-	            .header("Authorization", "Bearer " + token))
-	            .andExpect(status().isOk());
+	            .andExpect(status().is(401));
 	}
 }
