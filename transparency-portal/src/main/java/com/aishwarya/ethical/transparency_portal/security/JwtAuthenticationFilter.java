@@ -15,46 +15,49 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JWTUtil jwtUtil;
+	@Autowired
+	private JWTUtil jwtUtil;
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
 
-        String authHeader = request.getHeader("Authorization");
+		Cookie[] cookies = request.getCookies();
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        
-        String token = authHeader.substring(7);
-        
-        String username = jwtUtil.getUsernameFromToken(token);
-        if (username!=null && jwtUtil.validateToken(token) && SecurityContextHolder.getContext().getAuthentication() == null) {
-            
-            List<String> roles = jwtUtil.getRolesFromToken(token);
+		if (cookies != null) {
 
-            List<GrantedAuthority> authorities = roles.stream()
-                    .map(r -> new SimpleGrantedAuthority(r.startsWith("ROLE_") ? r : "ROLE_" + r))
-                    .collect(Collectors.toList());
+			for (Cookie cookie : cookies) {
+				if ("jwt".equals(cookie.getName())) {
+					String token = cookie.getValue();
 
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
-            
-            authToken.setDetails(
-                    new WebAuthenticationDetailsSource()
-                            .buildDetails(request));
-            
-            SecurityContextHolder.getContext().setAuthentication(authToken);
-        }
+					String username = jwtUtil.getUsernameFromToken(token);
+					if (username != null && jwtUtil.validateToken(token)
+							&& SecurityContextHolder.getContext().getAuthentication() == null) {
 
-        filterChain.doFilter(request, response);
-    }
+						List<String> roles = jwtUtil.getRolesFromToken(token);
+
+						List<GrantedAuthority> authorities = roles.stream()
+								.map(r -> new SimpleGrantedAuthority(r.startsWith("ROLE_") ? r : "ROLE_" + r))
+								.collect(Collectors.toList());
+
+						UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+								username, null, authorities);
+
+						authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+						SecurityContextHolder.getContext().setAuthentication(authToken);
+					}
+				}
+			}
+		}
+
+		filterChain.doFilter(request, response);
+	}
 }

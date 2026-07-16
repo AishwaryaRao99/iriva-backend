@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LoginResponse {
-	
-    private String token;
 
     private String tokenType;
 
@@ -19,7 +17,7 @@ public class LoginResponse {
 
     private Long expiresIn;
 
-    public static LoginResponse of(String token, String username, Long userId, Long expiresIn) {
-        return new LoginResponse(token, "Bearer", username, userId, expiresIn);
+    public static LoginResponse of(String username, Long userId, Long expiresIn) {
+        return new LoginResponse( "Bearer", username, userId, expiresIn);
     }
 }

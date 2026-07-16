@@ -1,6 +1,9 @@
 package com.aishwarya.ethical.transparency_portal.modules.auth.service;
 
+import java.time.Duration;
+
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,16 +21,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AuthenticationService {
 	
-	private final JWTUtil jwtUtil;
+	
 
 	@Value("${jwt.expiration}")
 	private long tokenExpirationTime;
 	
 	private final AuthenticationManager authenticationManager;
 
-    public AuthenticationService(JWTUtil jwtUtil, AuthenticationManager authenticationManager) {
+    public AuthenticationService(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
-        this.jwtUtil = jwtUtil;
     }
 
 	public LoginResponse authenticate(LoginRequest loginRequest) {
@@ -42,15 +44,10 @@ public class AuthenticationService {
 			
 			Long id = principal.getId();
 
-			// Step 2: Generate JWT token
-			String jwtToken = jwtUtil.generateToken(loginRequest.getUsername(), java.util.List.of("ROLE_USER"));
-
 			long expiresAt = System.currentTimeMillis() + tokenExpirationTime;
 
-			log.info("JWT token generated successfully for user: {}", loginRequest.getUsername());
-
-			// Step 3: Return response with token and user information
-			return LoginResponse.of(jwtToken, loginRequest.getUsername(), id, expiresAt);
+			// Step 3: Return response user information
+			return LoginResponse.of(loginRequest.getUsername(), id, expiresAt);
 
 		} catch (UnAuthorizedException ex) {
 			log.warn("Authentication failed: {}", ex.getMessage());
