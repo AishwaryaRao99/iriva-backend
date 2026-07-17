@@ -54,7 +54,7 @@ public class JWTUtil {
 					.verifyWith(getSigningKey())
 					.build()
 					.parseSignedClaims(token)
-					.getBody();
+					.getPayload();
 
 			return claims.getSubject();
 		} catch (JwtException e) {

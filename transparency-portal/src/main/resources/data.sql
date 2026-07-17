@@ -1,12 +1,12 @@
 
 --------------------------------------------- USERS TABLE -------------------------------------------------------
 INSERT INTO users (username, role, email, password, created_at, updated_at) 
-VALUES ('john_doe', 'USER', 'john@example.com', 
+VALUES ('john_doe', 'ROLE_USER', 'john@example.com', 
         '$2a$12$O718yic3jvorcrL9cmaRjOJWsr0W0UIFirtysqMsM9mrzgwJ1xa0.', 
         NOW(), NOW());
 
 INSERT INTO users (username, role, email, password, created_at, updated_at) 
-VALUES ('admin', 'ADMIN', 'admin@example.com', 
+VALUES ('admin', 'ROLE_ADMIN', 'admin@example.com', 
         '$2a$12$O718yic3jvorcrL9cmaRjOJWsr0W0UIFirtysqMsM9mrzgwJ1xa0.', 
         NOW(), NOW());
 
