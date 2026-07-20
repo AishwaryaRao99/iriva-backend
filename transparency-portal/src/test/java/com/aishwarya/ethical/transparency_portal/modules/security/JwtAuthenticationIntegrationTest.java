@@ -40,4 +40,20 @@ class JwtAuthenticationIntegrationTest {
 
 		mockMvc.perform(get("/user/test").cookie(jwtCookie)).andExpect(status().isOk());
 	}
+	
+	@Test
+	void unauthorizedLogin() throws Exception {
+
+	    String request = """
+	        {
+	            "username":"john_doe",
+	            "password":"password235543"
+	        }
+	        """;
+
+	    mockMvc.perform(post("/auth/login")
+	            .contentType(MediaType.APPLICATION_JSON)
+	            .content(request))
+	            .andExpect(status().is(401));
+	}
 }

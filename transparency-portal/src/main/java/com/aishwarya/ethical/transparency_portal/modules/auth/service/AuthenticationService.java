@@ -55,7 +55,7 @@ public class AuthenticationService {
 				    authorities.stream()
 				               .map(GrantedAuthority::getAuthority)
 				               .toList();
-			
+			System.out.println("Aish roles from service: "+roles);
 
 			// Step 2: Generate JWT token and store it in cookie
 			String jwtToken = jwtUtil.generateToken(loginRequest.getUsername(), roles);

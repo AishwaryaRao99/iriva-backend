@@ -18,6 +18,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.aishwarya.ethical.transparency_portal.security.JwtAuthenticationEntryPoint;
 import com.aishwarya.ethical.transparency_portal.security.JwtAuthenticationFilter;
 
 @Configuration
@@ -30,9 +31,11 @@ public class SecurityConfig {
 	}
 
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	private final JwtAuthenticationEntryPoint authenticationEntryPoint;
 	
-	public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+	public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, JwtAuthenticationEntryPoint authenticationEntryPoint) {
 		this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+		this.authenticationEntryPoint = authenticationEntryPoint;
 	}
 
 	@Bean
@@ -69,6 +72,9 @@ public class SecurityConfig {
 						// ========== DEFAULT SECURITY RULE ==========
 						// All other requests require authentication
 						.anyRequest().authenticated())
+				
+				.exceptionHandling(exception -> exception
+					    .authenticationEntryPoint(authenticationEntryPoint))
 
 				.headers(headers -> headers.frameOptions(frame -> frame.disable()))
 
