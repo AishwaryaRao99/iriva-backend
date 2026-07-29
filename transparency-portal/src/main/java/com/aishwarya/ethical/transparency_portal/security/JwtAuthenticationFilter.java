@@ -22,13 +22,16 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-	@Autowired
-	private JWTUtil jwtUtil;
+	
+	private final JWTUtil jwtUtil;
+	
+	public JwtAuthenticationFilter (JWTUtil jwtUtil) {
+		this.jwtUtil = jwtUtil;
+	}
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		System.out.println("JWT Filter Executed");
 		Cookie[] cookies = request.getCookies();
 
 		if (cookies != null) {
@@ -46,7 +49,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 						List<GrantedAuthority> authorities = roles.stream()
 								.map(r -> new SimpleGrantedAuthority(r.startsWith("ROLE_") ? r : "ROLE_" + r))
 								.collect(Collectors.toList());
-						System.out.println("Aish authorities: "+authorities);
 
 						UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
 								username, null, authorities);
