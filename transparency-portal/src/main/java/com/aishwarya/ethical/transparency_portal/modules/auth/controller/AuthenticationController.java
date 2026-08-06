@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aishwarya.ethical.transparency_portal.modules.auth.dto.LoginRequest;
+import com.aishwarya.ethical.transparency_portal.modules.auth.dto.RegisterRequest;
+import com.aishwarya.ethical.transparency_portal.modules.auth.dto.RegisterResponse;
 import com.aishwarya.ethical.transparency_portal.modules.auth.service.AuthenticationService;
 import com.aishwarya.ethical.transparency_portal.modules.user.model.LoginResult;
 import com.aishwarya.ethical.transparency_portal.security.JWTUtil;
@@ -62,5 +64,38 @@ public class AuthenticationController {
 				.path("/").sameSite("Lax").maxAge(0).build();
 
 		return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body("Logout successful");
+	}
+
+	/**
+	 * Register a new user with email and password.
+	 * 
+	 * Implements security best practices:
+	 * - Validates username, email, and password format
+	 * - Ensures password confirmation matches
+	 * - Checks for duplicate users in database
+	 * - Encodes password using BCrypt
+	 * 
+	 * @param registerRequest Contains username, email, password, and confirmPassword
+	 * @return RegisterResponse with user details (no sensitive data)
+	 * @throws BadRequestException if validation fails (passwords don't match, invalid format)
+	 * @throws ConflictException if username or email already exists in database
+	 */
+	@PostMapping("/register")
+	public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
+		log.info("Registration attempt for email: {}", registerRequest.getEmail());
+
+		try {
+			// Register user via AuthenticationService
+			RegisterResponse registerResponse = authenticationService.register(registerRequest);
+
+			log.info("Registration successful for user: {} (ID: {})", registerRequest.getUsername(), registerResponse.getUserId());
+
+			// Return 201 Created status with registration details
+			return ResponseEntity.status(org.springframework.http.HttpStatus.CREATED).body(registerResponse);
+
+		} catch (Exception ex) {
+			log.error("Registration failed for email: {} - Error: {}", registerRequest.getEmail(), ex.getMessage());
+			throw ex; // Let GlobalExceptionHandler handle it
+		}
 	}
 }
