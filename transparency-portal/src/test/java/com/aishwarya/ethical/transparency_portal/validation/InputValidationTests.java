@@ -625,11 +625,7 @@ class InputValidationTests {
 
             // Act
             Set<ConstraintViolation<ProductDTO>> violations = validator.validate(productDTO);
-            
-            System.out.println("-------------------------------------------------------------------------------------------");
-            violations.forEach(v ->
-            System.out.println(v.getPropertyPath() + " -> " + v.getMessage()));
-            
+                        
             // Assert
             assertTrue(violations.isEmpty(), "Valid product DTO should not have violations");
            
@@ -863,25 +859,15 @@ class InputValidationTests {
             productDTO.setEthicalScore(0.0);
             productDTO.setTransparencyScore(90.0);
             productDTO.setCategory(ProductCategory.FOOD);
-            Set<ConstraintViolation<ProductDTO>> violations = validator.validate(productDTO);
-            
-            System.out.println("-------------------------------------------------------------------------------------------");
-            violations.forEach(v ->
-            System.out.println(v.getPropertyPath() + " -> " + v.getMessage()));
+            Set<ConstraintViolation<ProductDTO>> violations = validator.validate(productDTO);        
             
             assertTrue(violations.isEmpty(), "Ethical score 0 should be valid");                    
 
             // Test boundary value 100
             productDTO.setEthicalScore(100.0);
-            violations = validator.validate(productDTO);
-            
-            System.out.println("-------------------------------------------------------------------------------------------");
-            violations.forEach(v ->
-            System.out.println(v.getPropertyPath() + " -> " + v.getMessage()));
-            
+            violations = validator.validate(productDTO);         
             assertTrue(violations.isEmpty(), "Ethical score 100 should be valid");
-            
-           
+                   
         }
 
         @Test

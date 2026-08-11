@@ -6,6 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,17 +69,6 @@ public class AuthenticationController {
 
 	/**
 	 * Register a new user with email and password.
-	 * 
-	 * Implements security best practices:
-	 * - Validates username, email, and password format
-	 * - Ensures password confirmation matches
-	 * - Checks for duplicate users in database
-	 * - Encodes password using BCrypt
-	 * 
-	 * @param registerRequest Contains username, email, password, and confirmPassword
-	 * @return RegisterResponse with user details (no sensitive data)
-	 * @throws BadRequestException if validation fails (passwords don't match, invalid format)
-	 * @throws ConflictException if username or email already exists in database
 	 */
 	@PostMapping("/register")
 	public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
@@ -97,5 +87,11 @@ public class AuthenticationController {
 			log.error("Registration failed for email: {} - Error: {}", registerRequest.getEmail(), ex.getMessage());
 			throw ex; // Let GlobalExceptionHandler handle it
 		}
+	}
+
+	@GetMapping("/login/oauth2")
+	public ResponseEntity<String> getOAuth2LoginInfo() {
+		// This endpoint can be used to expose OAuth2 login information if needed
+		return ResponseEntity.ok("OAuth2 login information");
 	}
 }

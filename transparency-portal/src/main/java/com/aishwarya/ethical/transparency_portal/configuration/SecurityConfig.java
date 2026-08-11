@@ -20,6 +20,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.aishwarya.ethical.transparency_portal.security.JwtAuthenticationEntryPoint;
 import com.aishwarya.ethical.transparency_portal.security.JwtAuthenticationFilter;
+import com.aishwarya.ethical.transparency_portal.security.OAuth2SuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -32,10 +33,12 @@ public class SecurityConfig {
 
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 	private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+	private final OAuth2SuccessHandler oAuth2SuccessHandler;
 	
-	public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, JwtAuthenticationEntryPoint authenticationEntryPoint) {
+	public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, JwtAuthenticationEntryPoint authenticationEntryPoint, OAuth2SuccessHandler oAuth2SuccessHandler) {
 		this.jwtAuthenticationFilter = jwtAuthenticationFilter;
 		this.authenticationEntryPoint = authenticationEntryPoint;
+		this.oAuth2SuccessHandler = oAuth2SuccessHandler;
 	}
 
 	@Bean
@@ -77,6 +80,10 @@ public class SecurityConfig {
 					    .authenticationEntryPoint(authenticationEntryPoint))
 
 				.headers(headers -> headers.frameOptions(frame -> frame.disable()))
+
+				// OAuth2 Login Configuration - for "Continue with Google"
+				.oauth2Login(oauth2 -> oauth2
+						.successHandler(oAuth2SuccessHandler))
 
 				// Stateless session management because we use JWTs
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))                
