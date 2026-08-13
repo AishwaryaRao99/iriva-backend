@@ -1,10 +1,12 @@
 package com.aishwarya.ethical.transparency_portal.modules.auth.controller;
 
 import java.time.Duration;
+import java.util.List;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +18,12 @@ import com.aishwarya.ethical.transparency_portal.modules.auth.dto.LoginRequest;
 import com.aishwarya.ethical.transparency_portal.modules.auth.dto.RegisterRequest;
 import com.aishwarya.ethical.transparency_portal.modules.auth.dto.RegisterResponse;
 import com.aishwarya.ethical.transparency_portal.modules.auth.service.AuthenticationService;
+import com.aishwarya.ethical.transparency_portal.modules.product.model.EthicalItem;
+import com.aishwarya.ethical.transparency_portal.modules.product.model.EthicalItemEntity;
 import com.aishwarya.ethical.transparency_portal.modules.user.model.LoginResult;
+import com.aishwarya.ethical.transparency_portal.modules.user.model.UserDTO;
+import com.aishwarya.ethical.transparency_portal.modules.user.model.UserModel;
+import com.aishwarya.ethical.transparency_portal.modules.user.service.UserService;
 import com.aishwarya.ethical.transparency_portal.security.JWTUtil;
 
 import jakarta.validation.Valid;
@@ -29,10 +36,11 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthenticationController {
 
 	private final AuthenticationService authenticationService;
+	private final UserService userService;
 
-	public AuthenticationController(JWTUtil jwtUtil, AuthenticationService authenticationService) {
+	public AuthenticationController(UserService userService, AuthenticationService authenticationService) {
 		this.authenticationService = authenticationService;
-
+		this.userService = userService;
 	}
 
 	@PostMapping("/login")
@@ -93,5 +101,24 @@ public class AuthenticationController {
 	public ResponseEntity<String> getOAuth2LoginInfo() {
 		// This endpoint can be used to expose OAuth2 login information if needed
 		return ResponseEntity.ok("OAuth2 login information");
+	}
+	
+	@GetMapping("/me")
+	public ResponseEntity<UserDTO> getCurrentUser(Authentication authentication) {
+
+	    String email = authentication.getName();
+
+	    UserModel user = userService.findByEmail(email);
+
+	    return ResponseEntity.ok(convertToDTO(user));
+	}
+	
+	private UserDTO convertToDTO(UserModel user) {
+	    return new UserDTO(
+	        user.getId(),
+	        user.getEmail(),
+	        user.getUsername(),
+	        user.getRole()
+	    );
 	}
 }

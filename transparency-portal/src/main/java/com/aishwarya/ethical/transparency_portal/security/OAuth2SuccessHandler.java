@@ -77,7 +77,10 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 				response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
 				// Send response with user information
-				sendAuthenticationResponse(response, jwt, user);
+				//sendAuthenticationResponse(response, jwt, user);
+				
+				//redirect to react app
+				getRedirectStrategy().sendRedirect(request, response, redirectUrl);
 			}
 		} catch (Exception ex) {
 			log.error("OAuth2 authentication failed: {}", ex.getMessage(), ex);
