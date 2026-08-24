@@ -68,6 +68,7 @@ public class OAuth2UserService {
 		}
 
 		newUser.setUsername(username);
+		newUser.setDisplayName(name);
 		newUser.setEmail(email);
 
 		// OAuth2 users don't have a password, set to null or a placeholder

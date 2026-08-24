@@ -164,6 +164,7 @@ class InputValidationTests {
         @BeforeEach
         void setUp() {
             registerRequest = new RegisterRequest();
+            registerRequest.setDisplayName("Test User");
         }
 
         @Test

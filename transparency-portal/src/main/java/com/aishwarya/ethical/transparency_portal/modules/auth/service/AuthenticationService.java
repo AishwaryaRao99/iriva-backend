@@ -107,6 +107,7 @@ public class AuthenticationService {
         try {
             // Delegate to UserService for registration with password encoding
             UserModel registeredUser = userService.registerUser(
+                    registerRequest.getDisplayName(),
                     registerRequest.getUsername(),
                     registerRequest.getEmail(),
                     registerRequest.getPassword()
@@ -117,6 +118,7 @@ public class AuthenticationService {
             // Return registration response without sensitive data (no password or token)
             return RegisterResponse.of(
                     registeredUser.getId(),
+                    registeredUser.getDisplayName(),
                     registeredUser.getUsername(),
                     registeredUser.getEmail(),
                     registeredUser.getRole()

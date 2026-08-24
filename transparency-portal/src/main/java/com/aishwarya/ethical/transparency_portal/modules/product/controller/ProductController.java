@@ -17,15 +17,19 @@ import com.aishwarya.ethical.transparency_portal.modules.product.dto.PageRespons
 import com.aishwarya.ethical.transparency_portal.modules.product.dto.ProductCategoryDTO;
 import com.aishwarya.ethical.transparency_portal.modules.product.dto.ProductDTO;
 import com.aishwarya.ethical.transparency_portal.modules.product.service.ProductService;
+import com.aishwarya.ethical.transparency_portal.modules.profile.dto.ReviewDTO;
+import com.aishwarya.ethical.transparency_portal.modules.profile.service.ProfileService;
 
 @RestController
 @RequestMapping("/api/v1/productsapi")
 @CrossOrigin(origins = "http://localhost:5173")
 public class ProductController {
 	private final ProductService productService;
+	private final ProfileService profileService;
 
-	public ProductController(ProductService productService) {
+	public ProductController(ProductService productService, ProfileService profileService) {
 		this.productService = productService;
+		this.profileService = profileService;
 	}
 
 
@@ -71,6 +75,14 @@ public class ProductController {
 	// @PreAuthorize("isAuthenticated()")
 	public ProductDTO getProductById(@PathVariable Long id) {
 		return productService.getProductById(id);
+	}
+
+	/**
+	 * Get reviews submitted by all users for a product.
+	 */
+	@GetMapping("/{id}/reviews")
+	public List<ReviewDTO> getProductReviews(@PathVariable Long id) {
+		return profileService.getProductReviews(id);
 	}
 
 	// ==================== PAGINATION ENDPOINTS ====================

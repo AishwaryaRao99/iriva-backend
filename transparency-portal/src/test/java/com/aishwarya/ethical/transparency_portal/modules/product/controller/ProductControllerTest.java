@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.aishwarya.ethical.transparency_portal.modules.product.dto.ProductCategoryDTO;
 import com.aishwarya.ethical.transparency_portal.modules.product.service.ProductService;
+import com.aishwarya.ethical.transparency_portal.modules.profile.service.ProfileService;
 import com.aishwarya.ethical.transparency_portal.security.JwtAuthenticationFilter;
 
 @WebMvcTest(ProductController.class)
@@ -30,6 +31,9 @@ class ProductControllerTest {
 
     @MockBean
     private ProductService productService;
+
+    @MockBean
+    private ProfileService profileService;
 
     @Test
     void getAllCategories_returnsCategoriesWithIcons() throws Exception {

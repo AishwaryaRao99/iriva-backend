@@ -10,12 +10,13 @@ import lombok.NoArgsConstructor;
 public class RegisterResponse {
 
     private Long userId;
+    private String displayName;
     private String username;
     private String email;
     private String role;
     private String message;
 
-    public static RegisterResponse of(Long userId, String username, String email, String role) {
-        return new RegisterResponse(userId, username, email, role, "User registered successfully");
+    public static RegisterResponse of(Long userId, String displayName, String username, String email, String role) {
+        return new RegisterResponse(userId, displayName, username, email, role, "User registered successfully");
     }
 }
