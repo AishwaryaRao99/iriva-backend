@@ -80,7 +80,7 @@ public class UserService {
      * @return Created UserModel
      * @throws ConflictException if username or email already exists
      */
-    public UserModel registerUser(String username, String email, String rawPassword) {
+    public UserModel registerUser(String displayName, String username, String email, String rawPassword) {
         log.info("Attempting to register new user with username: {} and email: {}", username, email);
 
         // Check for existing username (case sensitivity handled at DB level)
@@ -99,6 +99,7 @@ public class UserService {
             // Create new user entity
             UserModel newUser = new UserModel();
             newUser.setUsername(username);
+            newUser.setDisplayName(displayName.trim());
             newUser.setEmail(email);
             
             // Encode password using BCrypt (Spring Security best practice)

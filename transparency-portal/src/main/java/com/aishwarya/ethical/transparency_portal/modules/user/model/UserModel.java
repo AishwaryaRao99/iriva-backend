@@ -25,12 +25,16 @@ public class UserModel {
     private Long id;
 
     private String username;
+
+    private String displayName;
     
     private String role;
 
     private String email;
 
     private String password;
+
+    private String profileImageUrl;
 
     private LocalDateTime createdAt;
 

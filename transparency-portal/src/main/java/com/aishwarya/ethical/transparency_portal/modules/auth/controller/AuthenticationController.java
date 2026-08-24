@@ -116,9 +116,11 @@ public class AuthenticationController {
 	private UserDTO convertToDTO(UserModel user) {
 	    return new UserDTO(
 	        user.getId(),
+	        user.getDisplayName(),
 	        user.getEmail(),
 	        user.getUsername(),
-	        user.getRole()
+	        user.getRole(),
+	        user.getProfileImageUrl()
 	    );
 	}
 }

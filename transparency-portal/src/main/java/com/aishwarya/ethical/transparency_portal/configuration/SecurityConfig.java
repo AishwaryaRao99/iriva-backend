@@ -55,6 +55,9 @@ public class SecurityConfig {
 						// Product API endpoints - Allow public product browsing
 						.requestMatchers("/api/v1/productsapi/**").permitAll()
 
+						// Profile data and user actions require the logged-in user
+						.requestMatchers("/api/v1/profile/**").authenticated()
+
 						// Test endpoints - Allow JWT token generation for testing
 						.requestMatchers("/api/test/**").permitAll()
 

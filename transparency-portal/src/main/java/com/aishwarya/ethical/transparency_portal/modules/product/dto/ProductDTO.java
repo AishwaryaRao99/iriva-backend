@@ -31,7 +31,15 @@ public class ProductDTO {
     @NotBlank(message = "Product image URL is required")
     private String imageUrl;
     
-    @NotBlank(message = "Brand name is required")
+    public String getBrand() {
+		return brand;
+	}
+
+	public void setBrand(String brand) {
+		this.brand = brand;
+	}
+
+	@NotBlank(message = "Brand name is required")
     @Size(min = 2, max = 100, message = "Brand name must be between 2 and 100 characters")
     private String brand;
     
