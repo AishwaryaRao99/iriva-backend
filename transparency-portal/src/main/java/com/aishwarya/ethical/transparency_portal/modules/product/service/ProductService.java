@@ -28,6 +28,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class ProductService {
+	private static final List<String> REVIEW_TAGS = List.of(
+			"Good Quality", "Transparent", "Ethical",
+			"Eco Friendly", "Poor Quality",
+			"Misleading", "Expensive", "Packaging",
+			"Effective", "Good Value");
 	private final ProductRepository productRepository;
 	private final ObjectMapper objectMapper;
 
@@ -210,11 +215,22 @@ public class ProductService {
 	// @PreAuthorize("isAuthenticated()")
 	public ProductDTO getProductById(Long id) {
 		if (id == null) {
-			throw new IllegalArgumentException("Product ID must not be null.");
+			throw new IllegalArgumentException("Product ID not found.");
 		}
 		ProductModel model = productRepository.findById(id)
 				.orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
 		return toDTO(model);
+	}
+
+	public List<String> getProductReviewTags(Long productId) {
+		if (productId == null) {
+			throw new IllegalArgumentException("Product ID not found.");
+		}
+		if (!productRepository.existsById(productId)) {
+			throw new ProductNotFoundException("Product not found with id: " + productId);
+		}
+		return REVIEW_TAGS;
+
 	}
 
 	// ==================== PAGINATION METHODS ====================

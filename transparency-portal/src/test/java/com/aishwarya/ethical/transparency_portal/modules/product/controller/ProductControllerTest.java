@@ -1,6 +1,7 @@
 package com.aishwarya.ethical.transparency_portal.modules.product.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Arrays;
@@ -44,7 +45,7 @@ class ProductControllerTest {
         Mockito.when(productService.getAllCategoriesWithIcons()).thenReturn(categories);
 
         mockMvc.perform(get("/api/v1/productsapi/categories")
-        		.accept(MediaType.APPLICATION_JSON))
+            .accept(MediaType.APPLICATION_JSON))
         		.andDo(org.springframework.test.web.servlet.result.MockMvcResultHandlers.print())
                 .andExpect(status().isOk());
         Mockito.verify(productService).getAllCategoriesWithIcons();
@@ -54,5 +55,18 @@ class ProductControllerTest {
 //                .andExpect(jsonPath("$[0].icon", is("\uD83C\uDF72")))
 //                .andExpect(jsonPath("$[1].category", is("SKINCARE")))
 //                .andExpect(jsonPath("$[1].icon", is("\uD83D\uDC8E")));
+    }
+
+    @Test
+    void getProductReviewTags_delegatesToProductService() throws Exception {
+        Mockito.when(productService.getProductReviewTags(17L))
+                .thenReturn(List.of("Effective", "Gentle", "Eco-Friendly"));
+
+        mockMvc.perform(get("/api/v1/productsapi/17/review-tags")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0]").value("Effective"));
+
+        Mockito.verify(productService).getProductReviewTags(17L);
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.aishwarya.ethical.transparency_portal.exception_handling.ConflictException;
 import com.aishwarya.ethical.transparency_portal.exception_handling.ErrorCode;
 import com.aishwarya.ethical.transparency_portal.exception_handling.ProductNotFoundException;
+import com.aishwarya.ethical.transparency_portal.exception_handling.ReviewNotFoundException;
 import com.aishwarya.ethical.transparency_portal.modules.product.model.ProductModel;
 import com.aishwarya.ethical.transparency_portal.modules.product.repository.ProductRepository;
 import com.aishwarya.ethical.transparency_portal.modules.profile.dto.ActivityDTO;
@@ -85,6 +86,15 @@ public class ProfileService {
         return true;
     }
 
+    @Transactional(readOnly = true)
+    public boolean isProductSaved(String loginIdentifier, Long productId) {
+        UserModel user = currentUser(loginIdentifier);
+        if (!productRepository.existsById(productId)) {
+            throw new ProductNotFoundException("Product not found with id: " + productId);
+        }
+        return savedProductRepository.findByUserIdAndProductId(user.getId(), productId).isPresent();
+    }
+
     @Transactional
     public void removeSavedProduct(String loginIdentifier, Long productId) {
         savedProductRepository.findByUserIdAndProductId(currentUser(loginIdentifier).getId(), productId)
@@ -103,11 +113,37 @@ public class ProfileService {
         review.setUser(user);
         review.setProduct(product);
         review.setRating(request.rating());
-        review.setComment(request.comment().trim());
-        review.setTags(request.tags() == null ? List.of() : request.tags().stream()
-            .map(String::trim).filter(tag -> !tag.isEmpty()).distinct().toList());
+        review.setComment(request.text().trim());
+        review.setTags(normalizeTags(request));
         review.setCreatedAt(LocalDateTime.now());
         return toReviewDTO(reviewRepository.save(review));
+    }
+
+    @Transactional
+    public ReviewDTO updateReview(String loginIdentifier, Long reviewId, ReviewRequest request) {
+        Review review = findOwnedReview(loginIdentifier, reviewId);
+        review.setRating(request.rating());
+        review.setComment(request.text().trim());
+        review.getTags().clear();
+        review.getTags().addAll(normalizeTags(request));
+        return toReviewDTO(reviewRepository.save(review));
+    }
+
+    @Transactional
+    public void deleteReview(String loginIdentifier, Long reviewId) {
+        reviewRepository.delete(findOwnedReview(loginIdentifier, reviewId));
+    }
+
+    private Review findOwnedReview(String loginIdentifier, Long reviewId) {
+        UserModel user = currentUser(loginIdentifier);
+        return reviewRepository.findByIdAndUserId(reviewId, user.getId())
+                .orElseThrow(() -> new ReviewNotFoundException("Review not found with id: " + reviewId));
+    }
+
+    private List<String> normalizeTags(ReviewRequest request) {
+        return request.tags() == null ? new java.util.ArrayList<>() : request.tags().stream()
+            .map(String::trim).filter(tag -> !tag.isEmpty()).distinct()
+            .collect(java.util.stream.Collectors.toCollection(java.util.ArrayList::new));
     }
 
     private UserModel currentUser(String loginIdentifier) {

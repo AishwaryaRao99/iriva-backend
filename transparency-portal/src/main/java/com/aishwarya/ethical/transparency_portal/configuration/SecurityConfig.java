@@ -63,6 +63,9 @@ public class SecurityConfig {
 
 						// for h2 console access - dev purposes only -- change this in prod
 						.requestMatchers("/h2-console/**").permitAll()
+						
+						//for static images
+						.requestMatchers("/images/products/**").permitAll()
 
 						// ========== ROLE-BASED PROTECTED ENDPOINTS ==========
 

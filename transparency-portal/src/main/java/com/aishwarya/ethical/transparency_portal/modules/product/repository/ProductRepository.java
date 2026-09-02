@@ -4,6 +4,7 @@ import com.aishwarya.ethical.transparency_portal.modules.product.model.ProductCa
 import com.aishwarya.ethical.transparency_portal.modules.product.model.ProductModel;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

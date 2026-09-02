@@ -484,30 +484,17 @@ VALUES (16, '["Fair Trade certification verified", "European manufacturing stand
 
 UPDATE PRODUCTS SET transparency_analysis_id = 16 WHERE id = 16;
 
--- ========== FRONTEND PROFILE PLACEHOLDER PRODUCTS ==========
-INSERT INTO PRODUCTS (product_name, description, image_url, brand, ethical_score, transparency_score, category)
-VALUES ('Organic Face Serum', 'Placeholder product for the profile review screen.',
-        'https://images.unsplash.com/photo-1545239351-1141bd82e8a6?w=400&q=60', 'Pure Botanics', 9.0, 9.0, 'SKINCARE');
-
-INSERT INTO PRODUCTS (product_name, description, image_url, brand, ethical_score, transparency_score, category)
-VALUES ('Eco Dish Soap', 'Placeholder product for the profile review screen.',
-        'https://images.unsplash.com/photo-1503602642458-232111445657?w=400&q=60', 'EcoClean', 9.0, 9.0, 'CLEANING');
-
-INSERT INTO PRODUCTS (product_name, description, image_url, brand, ethical_score, transparency_score, category)
-VALUES ('Natural Moisturizer', 'Placeholder product for the profile review screen.',
-        'https://images.unsplash.com/photo-1549194389-1a1b23f6e0f1?w=400&q=60', 'Green Beauty Co', 8.5, 8.5, 'SKINCARE');
-
--- Sarah's placeholder reviews. User 3 and products 17-19 are created above.
+-- Sarah's seeded reviews use the real products above.
 INSERT INTO REVIEWS (user_id, product_id, rating, comment, created_at)
-VALUES (3, 17, 5,
+VALUES (3, 1, 5,
         'Love how transparent this brand is about their ingredients. Finally found a serum that works!',
         DATEADD('DAY', -14, NOW()));
 INSERT INTO REVIEWS (user_id, product_id, rating, comment, created_at)
-VALUES (3, 18, 5,
+VALUES (3, 2, 5,
         'Amazing product! Cleans well and I love that it''s completely transparent about ingredients.',
         DATEADD('DAY', -21, NOW()));
 INSERT INTO REVIEWS (user_id, product_id, rating, comment, created_at)
-VALUES (3, 19, 4,
+VALUES (3, 3, 4,
         'Great moisturizer but wish the packaging was more sustainable. Otherwise very happy with it.',
         DATEADD('MONTH', -1, NOW()));
 
@@ -518,6 +505,6 @@ INSERT INTO REVIEW_TAGS (review_id, tag_order, tags) VALUES (2, 1, 'Works Well')
 INSERT INTO REVIEW_TAGS (review_id, tag_order, tags) VALUES (3, 0, 'Hydrating');
 INSERT INTO REVIEW_TAGS (review_id, tag_order, tags) VALUES (3, 1, 'Good Value');
 
-INSERT INTO SAVED_PRODUCTS (user_id, product_id, saved_at) VALUES (3, 17, DATEADD('DAY', -13, NOW()));
-INSERT INTO SAVED_PRODUCTS (user_id, product_id, saved_at) VALUES (3, 18, DATEADD('DAY', -20, NOW()));
-INSERT INTO SAVED_PRODUCTS (user_id, product_id, saved_at) VALUES (3, 19, DATEADD('DAY', -30, NOW()));
+INSERT INTO SAVED_PRODUCTS (user_id, product_id, saved_at) VALUES (3, 1, DATEADD('DAY', -13, NOW()));
+INSERT INTO SAVED_PRODUCTS (user_id, product_id, saved_at) VALUES (3, 2, DATEADD('DAY', -20, NOW()));
+INSERT INTO SAVED_PRODUCTS (user_id, product_id, saved_at) VALUES (3, 3, DATEADD('DAY', -30, NOW()));

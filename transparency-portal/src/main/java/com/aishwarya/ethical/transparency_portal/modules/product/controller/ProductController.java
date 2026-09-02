@@ -85,6 +85,11 @@ public class ProductController {
 		return profileService.getProductReviews(id);
 	}
 
+	@GetMapping("/{id}/review-tags")
+	public List<String> getProductReviewTags(@PathVariable Long id) {
+		return productService.getProductReviewTags(id);
+	}
+
 	// ==================== PAGINATION ENDPOINTS ====================
 
 	/**

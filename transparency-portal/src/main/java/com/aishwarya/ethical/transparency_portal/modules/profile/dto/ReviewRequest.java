@@ -9,6 +9,6 @@ import java.util.List;
 
 public record ReviewRequest(
         @NotNull @Min(1) @Max(5) Integer rating,
-        @NotBlank @Size(max = 2000) String comment,
+        @NotBlank @Size(max = 2000) String text,
         @Size(max = 5) List<@NotBlank @Size(max = 50) String> tags) {
 }

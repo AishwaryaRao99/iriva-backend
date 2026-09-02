@@ -10,6 +10,7 @@ import com.aishwarya.ethical.transparency_portal.modules.profile.model.Review;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findByUserIdOrderByCreatedAtDesc(Long userId);
     List<Review> findByProductIdOrderByCreatedAtDesc(Long productId);
-    Optional<Review> findByUserIdAndProductId(Long userId, Long productId);
     long countByUserId(Long userId);
+    Optional<Review> findByUserIdAndProductId(Long userId, Long productId);
+    Optional<Review> findByIdAndUserId(Long id, Long userId);
 }

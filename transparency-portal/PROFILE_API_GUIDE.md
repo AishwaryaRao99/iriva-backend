@@ -42,6 +42,13 @@ currently nullable so the frontend can display its default avatar.
 `POST /api/v1/profile/saved-products/{productId}` saves a product for the
 logged-in user. Saving the same product more than once is idempotent.
 
+`GET /api/v1/profile/saved-products/{productId}` returns whether the product
+is saved for the logged-in user:
+
+```json
+{"productId":17,"saved":true}
+```
+
 `DELETE /api/v1/profile/saved-products/{productId}` removes the product from
 that user's saved list and returns `204 No Content`.
 
@@ -55,6 +62,11 @@ same review object shape shown in the profile response.
 
 `POST /api/v1/profile/reviews/{productId}` creates the logged-in user's review.
 Only one review per user and product is allowed.
+
+`PUT /api/v1/profile/reviews/{reviewId}` updates the logged-in user's review
+using the same request body as create. `DELETE /api/v1/profile/reviews/{reviewId}`
+deletes the logged-in user's review and returns `204 No Content`. A user cannot
+update or delete another user's review.
 
 ```json
 {
