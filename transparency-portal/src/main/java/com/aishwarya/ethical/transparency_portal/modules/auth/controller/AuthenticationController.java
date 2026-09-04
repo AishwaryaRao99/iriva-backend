@@ -1,0 +1,126 @@
+package com.aishwarya.ethical.transparency_portal.modules.auth.controller;
+
+import java.time.Duration;
+import java.util.List;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.aishwarya.ethical.transparency_portal.modules.auth.dto.LoginRequest;
+import com.aishwarya.ethical.transparency_portal.modules.auth.dto.RegisterRequest;
+import com.aishwarya.ethical.transparency_portal.modules.auth.dto.RegisterResponse;
+import com.aishwarya.ethical.transparency_portal.modules.auth.service.AuthenticationService;
+import com.aishwarya.ethical.transparency_portal.modules.product.model.EthicalItem;
+import com.aishwarya.ethical.transparency_portal.modules.product.model.EthicalItemEntity;
+import com.aishwarya.ethical.transparency_portal.modules.user.model.LoginResult;
+import com.aishwarya.ethical.transparency_portal.modules.user.model.UserDTO;
+import com.aishwarya.ethical.transparency_portal.modules.user.model.UserModel;
+import com.aishwarya.ethical.transparency_portal.modules.user.service.UserService;
+import com.aishwarya.ethical.transparency_portal.security.JWTUtil;
+
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+
+@RestController
+@RequestMapping("/auth")
+@Validated
+@Slf4j
+public class AuthenticationController {
+
+	private final AuthenticationService authenticationService;
+	private final UserService userService;
+
+	public AuthenticationController(UserService userService, AuthenticationService authenticationService) {
+		this.authenticationService = authenticationService;
+		this.userService = userService;
+	}
+
+	@PostMapping("/login")
+	public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+		log.info("Login attempt for user: {}", loginRequest.getUsername());
+
+		try {
+			// Authenticate user and store user info
+			LoginResult loginResult = authenticationService.authenticate(loginRequest);
+
+			ResponseCookie cookie = ResponseCookie.from("jwt", loginResult.getJwt()).httpOnly(true).secure(false)
+					.path("/").maxAge(Duration.ofHours(1)).sameSite("Lax") // in prod it is none since we use different domains -
+					.build();														// vercel and render for each
+					
+			log.info("Login successful for user: {}", loginRequest.getUsername());
+
+			return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
+					.body(loginResult.getLoginResponse());
+
+		} catch (Exception ex) {
+			log.error("Login failed for user: {} - Error: {}", loginRequest.getUsername(), ex.getMessage());
+			throw ex; // Let GlobalExceptionHandler handle it
+		}
+	}
+
+	@PostMapping("/logout")
+	public ResponseEntity<String> logout() {
+
+		ResponseCookie cookie = ResponseCookie.from("jwt", "").httpOnly(true).secure(false) // true in production
+				.path("/").sameSite("Lax").maxAge(0).build();
+
+		return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body("Logout successful");
+	}
+
+	/**
+	 * Register a new user with email and password.
+	 */
+	@PostMapping("/register")
+	public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
+		log.info("Registration attempt for email: {}", registerRequest.getEmail());
+
+		try {
+			// Register user via AuthenticationService
+			RegisterResponse registerResponse = authenticationService.register(registerRequest);
+
+			log.info("Registration successful for user: {} (ID: {})", registerRequest.getUsername(), registerResponse.getUserId());
+
+			// Return 201 Created status with registration details
+			return ResponseEntity.status(org.springframework.http.HttpStatus.CREATED).body(registerResponse);
+
+		} catch (Exception ex) {
+			log.error("Registration failed for email: {} - Error: {}", registerRequest.getEmail(), ex.getMessage());
+			throw ex; // Let GlobalExceptionHandler handle it
+		}
+	}
+
+	@GetMapping("/login/oauth2")
+	public ResponseEntity<String> getOAuth2LoginInfo() {
+		// This endpoint can be used to expose OAuth2 login information if needed
+		return ResponseEntity.ok("OAuth2 login information");
+	}
+	
+	@GetMapping("/me")
+	public ResponseEntity<UserDTO> getCurrentUser(Authentication authentication) {
+
+	    String email = authentication.getName();
+
+	    UserModel user = userService.findByEmail(email);
+
+	    return ResponseEntity.ok(convertToDTO(user));
+	}
+	
+	private UserDTO convertToDTO(UserModel user) {
+	    return new UserDTO(
+	        user.getId(),
+	        user.getDisplayName(),
+	        user.getEmail(),
+	        user.getUsername(),
+	        user.getRole(),
+	        user.getProfileImageUrl()
+	    );
+	}
+}

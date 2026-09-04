@@ -12,8 +12,21 @@ spring:
   application:
     name: transparency-portal
   profiles: 
-      active: prod
+      active: dev
   servlet:
     multipart:
       max-file-size: 20MB
       max-request-size: 20MB
+
+jwt:
+  secret: wihfbdfibgdfi374543#%$%BIFD*^%$bhsdsdfsdg36528bsDVDA
+  expiration: 3600000
+
+oauth2:
+  redirect-url: ${OAUTH2_REDIRECT_URL:http://localhost:5173}
+  
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG

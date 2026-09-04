@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.aishwarya.ethical.transparency_portal.exception_handling.UserNotFoundException;
 import com.aishwarya.ethical.transparency_portal.modules.user.service.UserService;
 @RestController
-@RequestMapping("/api/v1/users")
-public class UserAuthController {
+@RequestMapping("/user")
+public class UserAuthTestController {
 	private final UserService userService;
-	public UserAuthController(UserService userService) {
+	public UserAuthTestController(UserService userService) {
 		this.userService = userService;
 	}
 	@GetMapping("/test")

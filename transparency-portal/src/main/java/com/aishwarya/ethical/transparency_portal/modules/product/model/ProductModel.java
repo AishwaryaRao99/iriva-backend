@@ -54,6 +54,6 @@ public class ProductModel {
 	
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "transparency_analysis_id", foreignKey = @ForeignKey(name = "fk_product_transparency_analysis"))
-	private TransparencyAnalysisEntity transparencyAnalysis;
+	private TransparencyAnalysisEntity transparencyAnalysis;    
 
 }

@@ -1,5 +1,7 @@
 package com.aishwarya.ethical.transparency_portal.modules.user.model;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,5 +25,18 @@ public class UserModel {
     private Long id;
 
     private String username;
+
+    private String displayName;
+    
+    private String role;
+
+    private String email;
+
     private String password;
+
+    private String profileImageUrl;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 }
