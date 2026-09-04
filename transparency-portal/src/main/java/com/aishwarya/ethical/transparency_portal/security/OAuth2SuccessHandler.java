@@ -32,7 +32,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 	private final JWTUtil jwtUtil;
 	private final ObjectMapper objectMapper;
 
-	@Value("${oauth2.redirect-url:http://localhost:5173}")
+	@Value("${oauth2.redirect-url:https://truthlabel-frontend.vercel.app}")
 	private String redirectUrl;
 
 	public OAuth2SuccessHandler(OAuth2UserService oAuth2UserService, JWTUtil jwtUtil, ObjectMapper objectMapper) {
@@ -52,7 +52,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 				// Extract user information from OAuth2 principal
 				String email = oAuth2User.getAttribute("email");				
-				log.info("OAuth2 authentication successful for user: {}", email);
 				String name = oAuth2User.getAttribute("name");
 				String providerId = oAuth2User.getAttribute("sub"); // Google uses 'sub' for unique ID
 
@@ -63,15 +62,13 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 				Collection<String> roles = extractRoles(user.getRole());
 				String jwt = jwtUtil.generateToken(email, roles);
 
-				log.info("JWT token generated for OAuth2 user: {}", email);
-
 				// Set JWT as HTTP-only cookie with secure settings
 				ResponseCookie cookie = ResponseCookie.from("jwt", jwt)
 						.httpOnly(true)
-						.secure(false) // Set to true in production with HTTPS
+						.secure(true) // Set to true in production with HTTPS
 						.path("/")
 						.maxAge(Duration.ofHours(1))
-						.sameSite("Lax") // In production with different domains, use "None" and set secure=true
+						.sameSite("None") // In production with different domains, use "None" and set secure=true
 						.build();
 
 				response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
@@ -98,27 +95,4 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 		return Collections.singletonList("ROLE_USER");
 	}
 
-	/**
-	 * Send authentication response with user details to frontend
-	 */
-	private void sendAuthenticationResponse(HttpServletResponse response, String jwt, UserModel user)
-			throws IOException {
-		
-		response.setContentType("application/json");
-		response.setStatus(HttpServletResponse.SC_OK);
-
-		Map<String, Object> body = Map.of(
-			"success", true,
-			"message", "OAuth2 authentication successful",
-			"user", Map.of(
-				"id", user.getId(),
-				"email", user.getEmail(),
-				"username", user.getUsername(),
-				"role", user.getRole()
-			),
-			"token", jwt
-		);
-
-		response.getWriter().write(objectMapper.writeValueAsString(body));
-	}
 }

@@ -50,11 +50,6 @@ class ProductControllerTest {
                 .andExpect(status().isOk());
         Mockito.verify(productService).getAllCategoriesWithIcons();
                 
-//                .andExpect(jsonPath("$", hasSize(2)))
-//                .andExpect(jsonPath("$[0].category", is("FOOD")))
-//                .andExpect(jsonPath("$[0].icon", is("\uD83C\uDF72")))
-//                .andExpect(jsonPath("$[1].category", is("SKINCARE")))
-//                .andExpect(jsonPath("$[1].icon", is("\uD83D\uDC8E")));
     }
 
     @Test

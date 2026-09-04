@@ -22,7 +22,7 @@ import com.aishwarya.ethical.transparency_portal.modules.profile.service.Profile
 
 @RestController
 @RequestMapping("/api/v1/productsapi")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "https://truthlabel-frontend.vercel.app")
 public class ProductController {
 	private final ProductService productService;
 	private final ProfileService profileService;

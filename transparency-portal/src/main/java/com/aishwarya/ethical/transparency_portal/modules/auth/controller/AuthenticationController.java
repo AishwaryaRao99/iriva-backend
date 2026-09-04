@@ -52,7 +52,7 @@ public class AuthenticationController {
 			LoginResult loginResult = authenticationService.authenticate(loginRequest);
 
 			ResponseCookie cookie = ResponseCookie.from("jwt", loginResult.getJwt()).httpOnly(true).secure(false)
-					.path("/").maxAge(Duration.ofHours(1)).sameSite("Lax") // in prod it is none since we use different domains -
+					.path("/").maxAge(Duration.ofHours(1)).sameSite("none") // in prod it is none since we use different domains -
 					.build();														// vercel and render for each
 					
 			log.info("Login successful for user: {}", loginRequest.getUsername());
@@ -69,7 +69,7 @@ public class AuthenticationController {
 	@PostMapping("/logout")
 	public ResponseEntity<String> logout() {
 
-		ResponseCookie cookie = ResponseCookie.from("jwt", "").httpOnly(true).secure(false) // true in production
+		ResponseCookie cookie = ResponseCookie.from("jwt", "").httpOnly(true).secure(true) // true in production
 				.path("/").sameSite("Lax").maxAge(0).build();
 
 		return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body("Logout successful");

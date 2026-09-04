@@ -23,12 +23,9 @@ VALUES ('sarah_mitchell', 'Sarah Mitchell', 'ROLE_USER', 'sarah.mitchell@email.c
 INSERT INTO PRODUCTS (product_name, DESCRIPTION, IMAGE_URL, BRAND, ETHICAL_SCORE, TRANSPARENCY_SCORE, CATEGORY)
 VALUES ('Burt''s Bees Very Volumizing Pomegranate Shampoo',
 'Natural shampoo made with pomegranate seed oil, free of sulfates and parabens. Made with 99.6% natural ingredients.',
-
 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=500&q=80',
 'Burt''s Bees', 9.1, 9.3, 'SKINCARE')
 ON CONFLICT (product_name) DO NOTHING;
-
-
 
 
 INSERT INTO ETHICAL_ITEMS (product_id, title, description, icon) VALUES
@@ -59,11 +56,8 @@ INSERT INTO PRODUCTS (product_name, DESCRIPTION, IMAGE_URL, BRAND, ETHICAL_SCORE
 VALUES ('CeraVe Moisturizing Cream',
 'Dermatologist-developed daily moisturizing cream with three essential ceramides and hyaluronic acid. Fragrance-free and non-comedogenic.',
 'https://images.unsplash.com/photo-1616986953793-2e6159b78580?w=400',
-
 'CeraVe', 8.8, 9.1, 'SKINCARE')
 ON CONFLICT (product_name) DO NOTHING
-
-
 
 
 INSERT INTO ETHICAL_ITEMS (product_id, title, description, icon) VALUES
@@ -94,11 +88,8 @@ INSERT INTO PRODUCTS (product_name, DESCRIPTION, IMAGE_URL, BRAND, ETHICAL_SCORE
 VALUES ('Drunk Elephant C-Firma Fresh Vitamin C Serum',
 'Potent vitamin C serum designed to brighten the complexion and fight environmental stressors. Clean, cruelty-free beauty.',
 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=500&q=80',
-
 'Drunk Elephant', 8.9, 9.4, 'SKINCARE')
 ON CONFLICT (product_name) DO NOTHING
-
-
 
 
 INSERT INTO ETHICAL_ITEMS (product_id, title, description, icon) VALUES
@@ -129,12 +120,8 @@ INSERT INTO PRODUCTS (product_name, DESCRIPTION, IMAGE_URL, BRAND, ETHICAL_SCORE
 VALUES ('Dr. Bronner''s 18-in-1 Hemp Pure Castile Soap',
 'Multi-purpose, plant-based soap made with organic oils. Fair trade certified, vegan, and completely transparent supply chain.',
 'https://images.unsplash.com/photo-1650964336602-f60274c5a94d?w=500&q=80',
-
 'Dr. Bronner''s', 9.6, 9.8, 'SKINCARE')
 ON CONFLICT (product_name) DO NOTHING
-
-
-
 
 INSERT INTO ETHICAL_ITEMS (product_id, title, description, icon) VALUES
 (4, 'Fair Trade Certified', 'All ingredients sourced through fair trade practices', 'handshake-icon'),
@@ -167,13 +154,9 @@ UPDATE PRODUCTS SET transparency_analysis_id = 4 WHERE id = 4;
 INSERT INTO PRODUCTS (product_name, DESCRIPTION, IMAGE_URL, BRAND, ETHICAL_SCORE, TRANSPARENCY_SCORE, CATEGORY)
 VALUES ('Fair Trade Certified Organic Coffee',
 'Single-origin organic coffee beans from Ethiopian smallholder farmers. Fair trade certified with full traceability.',
-
 'https://truthlabel-backend.onrender.com/transparency-portal/images/products/coffee.jpg',
 'Equal Exchange', 9.3, 9.5, 'FOOD')
 ON CONFLICT (product_name) DO NOTHING
-
-
-
 
 INSERT INTO ETHICAL_ITEMS (product_id, title, description, icon) VALUES
 (5, 'Fair Trade Certified', 'Supports smallholder farmers with fair wages', 'handshake-icon'),
@@ -202,13 +185,9 @@ UPDATE PRODUCTS SET transparency_analysis_id = 5 WHERE id = 5;
 INSERT INTO PRODUCTS (product_name, DESCRIPTION, IMAGE_URL, BRAND, ETHICAL_SCORE, TRANSPARENCY_SCORE, CATEGORY)
 VALUES ('Organic Raw Almond Butter',
 'Cold-pressed almonds from certified organic orchards. No added sugars, oils, or salt. Verified sustainable sourcing.',
-
 'https://truthlabel-backend.onrender.com/transparency-portaltransparency-portal/images/products/almond.jpg',
 'Barney Butter', 8.7, 8.9, 'FOOD')
 ON CONFLICT (product_name) DO NOTHING
-
-
-
 
 INSERT INTO ETHICAL_ITEMS (product_id, title, description, icon) VALUES
 (6, 'Cold-Pressed Process', 'Preserves nutrients without heating', 'snowflake-icon'),
@@ -237,13 +216,9 @@ UPDATE PRODUCTS SET transparency_analysis_id = 6 WHERE id = 6;
 INSERT INTO PRODUCTS (product_name, DESCRIPTION, IMAGE_URL, BRAND, ETHICAL_SCORE, TRANSPARENCY_SCORE, CATEGORY)
 VALUES ('Rainforest Alliance Certified Chocolate Bar',
 'Single-origin dark chocolate (72% cacao) from responsibly managed farms. Supports forest conservation.',
-
 'https://truthlabel-backend.onrender.com/transparency-portal/images/products/chocolate.jpg',
 'Tony''s Chocolonely', 9.2, 9.4, 'FOOD')
 ON CONFLICT (product_name) DO NOTHING
-
-
-
 
 INSERT INTO ETHICAL_ITEMS (product_id, title, description, icon) VALUES
 (7, 'Rainforest Alliance Certified', 'Forests and wildlife protected', 'leaf-icon'),
@@ -274,13 +249,9 @@ UPDATE PRODUCTS SET transparency_analysis_id = 7 WHERE id = 7;
 INSERT INTO PRODUCTS (product_name, DESCRIPTION, IMAGE_URL, BRAND, ETHICAL_SCORE, TRANSPARENCY_SCORE, CATEGORY)
 VALUES ('USDA Organic Certified Blueberries',
 'Freshly harvested organic blueberries from family farms with complete supply chain transparency. Non-GMO verified.',
-
 'https://truthlabel-backend.onrender.com/transparency-portal/images/products/blueberries.jpg',
 'Nature''s Harvest', 8.8, 8.7, 'FOOD')
 ON CONFLICT (product_name) DO NOTHING
-
-
-
 
 INSERT INTO ETHICAL_ITEMS (product_id, title, description, icon) VALUES
 (8, 'USDA Organic Certified', 'No synthetic pesticides used', 'certified-icon'),
@@ -310,13 +281,9 @@ UPDATE PRODUCTS SET transparency_analysis_id = 8 WHERE id = 8;
 INSERT INTO PRODUCTS (product_name, DESCRIPTION, IMAGE_URL, BRAND, ETHICAL_SCORE, TRANSPARENCY_SCORE, CATEGORY)
 VALUES ('Ecos Hypoallergenic All-Purpose Cleaner',
 'Plant-based, non-toxic all-purpose cleaner. Vegan, cruelty-free, and biodegradable. EPA certified Safer Choice product.',
-
 'https://truthlabel-backend.onrender.com/transparency-portal/images/products/spray.jpg',
 'ECOS', 8.9, 9.2, 'CLEANING')
 ON CONFLICT (product_name) DO NOTHING
-
-
-
 
 INSERT INTO ETHICAL_ITEMS (product_id, title, description, icon) VALUES
 (9, 'EPA Safer Choice Certified', 'Meets EPA environmental and health standards', 'certified-icon'),
@@ -334,7 +301,6 @@ ON CONFLICT (product_id) DO NOTHING;
 INSERT INTO SCORE_BREAKDOWNS (ingredient_transparency, ethical_certifications, manufacturing_info, sourcing_transparency)
 VALUES (87, 91, 88, 89)
 ON CONFLICT (ingredient_transparency, ethical_certifications, manufacturing_info, sourcing_transparency) DO NOTHING;
-
 INSERT INTO TRANSPARENCY_ANALYSES (score_breakdown_id, score_high_reasons_json, improvement_areas_json)
 VALUES (9, '["EPA Safer Choice certification", "Plant-based ingredient sourcing disclosed", "Biodegradable formula verified", "Manufacturing location transparent", "Vegan certification confirmed"]',
 '["Packaging could be 100% recyclable", "More supply chain details on plant sourcing"]');
@@ -346,12 +312,9 @@ UPDATE PRODUCTS SET transparency_analysis_id = 9 WHERE id = 9;
 INSERT INTO PRODUCTS (product_name, DESCRIPTION, IMAGE_URL, BRAND, ETHICAL_SCORE, TRANSPARENCY_SCORE, CATEGORY)
 VALUES ('Seventh Generation Free & Clear Laundry Detergent',
 'Hypoallergenic laundry detergent free of dyes and perfumes. Plant-derived ingredients, biodegradable, and cruelty-free.',
-
 'https://truthlabel-backend.onrender.com/transparency-portal/images/products/detergent.jpg',
 'Seventh Generation', 9.0, 9.1, 'CLEANING')
 ON CONFLICT (product_name) DO NOTHING
-
-
 
 
 INSERT INTO ETHICAL_ITEMS (product_id, title, description, icon) VALUES
@@ -382,13 +345,9 @@ UPDATE PRODUCTS SET transparency_analysis_id = 10 WHERE id = 10;
 INSERT INTO PRODUCTS (product_name, DESCRIPTION, IMAGE_URL, BRAND, ETHICAL_SCORE, TRANSPARENCY_SCORE, CATEGORY)
 VALUES ('Nellie''s All Natural Laundry Soda',
 'Zero-waste laundry detergent concentrate made from naturally sourced minerals. Biodegradable and septic safe.',
-
 'https://truthlabel-backend.onrender.com/transparency-portal/images/products/spray.jpg',
 'Nellie''s', 9.1, 9.0, 'CLEANING')
 ON CONFLICT (product_name) DO NOTHING
-
-
-
 
 INSERT INTO ETHICAL_ITEMS (product_id, title, description, icon) VALUES
 (11, 'Zero-Waste Packaging', 'Plastic-free, compostable packaging', 'leaf-icon'),
@@ -418,13 +377,9 @@ UPDATE PRODUCTS SET transparency_analysis_id = 11 WHERE id = 11;
 INSERT INTO PRODUCTS (product_name, DESCRIPTION, IMAGE_URL, BRAND, ETHICAL_SCORE, TRANSPARENCY_SCORE, CATEGORY)
 VALUES ('Mrs. Meyer''s Clean Day Multi-Surface Cleaner',
 'Plant-derived formula with essential oils. Cruelty-free, USDA bio-based certified, and made with renewable resources.',
-
 'https://truthlabel-backend.onrender.com/transparency-portal/images/products/detergent.jpg',
 'Mrs. Meyer''s Clean Day', 8.7, 8.8, 'CLEANING')
 ON CONFLICT (product_name) DO NOTHING
-
-
-
 
 INSERT INTO ETHICAL_ITEMS (product_id, title, description, icon) VALUES
 (12, 'USDA Certified Bio-Based', 'Made from renewable plant resources', 'certified-icon'),
@@ -456,13 +411,9 @@ UPDATE PRODUCTS SET transparency_analysis_id = 12 WHERE id = 12;
 INSERT INTO PRODUCTS (product_name, DESCRIPTION, IMAGE_URL, BRAND, ETHICAL_SCORE, TRANSPARENCY_SCORE, CATEGORY)
 VALUES ('Regenerative Organic Certified Denim Jeans',
 'Made from regenerative organic cotton. Fair labor practices verified, transparent supply chain, plastic-free packaging.',
-
 'https://truthlabel-backend.onrender.com/transparency-portal/images/products/jeans.jpg',
 'Patagonia', 9.4, 9.6, 'FASHION')
 ON CONFLICT (product_name) DO NOTHING
-
-
-
 
 INSERT INTO ETHICAL_ITEMS (product_id, title, description, icon) VALUES
 (13, 'Regenerative Organic Certified', 'Soil health and biodiversity improved through farming', 'globe-icon'),
@@ -493,12 +444,8 @@ INSERT INTO PRODUCTS (product_name, DESCRIPTION, IMAGE_URL, BRAND, ETHICAL_SCORE
 VALUES ('Sustainable Recycled Polyester T-Shirt',
 'Made from 100% recycled materials with full factory transparency. Carbon-neutral production and fair wages guaranteed.',
 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&q=80',
-
 'Reformation', 9.2, 9.3, 'FASHION')
 ON CONFLICT (product_name) DO NOTHING
-
-
-
 
 INSERT INTO ETHICAL_ITEMS (product_id, title, description, icon) VALUES
 (14, '100% Recycled Materials', 'Made from post-consumer plastic bottles', 'recycle-icon'),
@@ -528,13 +475,9 @@ UPDATE PRODUCTS SET transparency_analysis_id = 14 WHERE id = 14;
 INSERT INTO PRODUCTS (product_name, DESCRIPTION, IMAGE_URL, BRAND, ETHICAL_SCORE, TRANSPARENCY_SCORE, CATEGORY)
 VALUES ('Ethically Made Organic Cotton Socks',
 'GOTS certified organic cotton with fair trade certification. Complete transparency from farm to consumer.',
-
 'https://truthlabel-backend.onrender.com/transparency-portal/images/products/socks.jpg',
 'Everlane', 8.9, 9.2, 'FASHION')
 ON CONFLICT (product_name) DO NOTHING
-
-
-
 
 INSERT INTO ETHICAL_ITEMS (product_id, title, description, icon) VALUES
 (15, 'GOTS Certified Organic', 'Global Organic Textile Standard certified', 'certified-icon'),
@@ -569,8 +512,6 @@ VALUES ('Fair Trade Certified Linen Blazer',
 'People Tree', 9.3, 9.5, 'FASHION')
 ON CONFLICT (product_name) DO NOTHING
 
-
-
 INSERT INTO ETHICAL_ITEMS (product_id, title, description, icon) VALUES
 (16, 'Fair Trade Certified', 'Producers and workers paid fair prices', 'handshake-icon'),
 (16, 'European Manufacturing', 'Made in EU with strict labor standards', 'globe-icon'),
@@ -595,27 +536,32 @@ VALUES (16, '["Fair Trade certification verified", "European manufacturing stand
 
 UPDATE PRODUCTS SET transparency_analysis_id = 16 WHERE id = 16;
 
--- Sarah's seeded reviews use the real products above.
+-- Review Data
+
 INSERT INTO REVIEWS (user_id, product_id, rating, comment, created_at)
 VALUES (3, 1, 5,
         'Love how transparent this brand is about their ingredients. Finally found a serum that works!',
-        DATEADD('DAY', -14, NOW()));
+        DATEADD('DAY', -14, NOW()))
+ON CONFLICT (user_id) DO NOTHING;
+
 INSERT INTO REVIEWS (user_id, product_id, rating, comment, created_at)
 VALUES (3, 2, 5,
         'Amazing product! Cleans well and I love that it''s completely transparent about ingredients.',
-        DATEADD('DAY', -21, NOW()));
+        DATEADD('DAY', -21, NOW()))
+ON CONFLICT (user_id) DO NOTHING;
 INSERT INTO REVIEWS (user_id, product_id, rating, comment, created_at)
 VALUES (3, 3, 4,
         'Great moisturizer but wish the packaging was more sustainable. Otherwise very happy with it.',
-        DATEADD('MONTH', -1, NOW()));
+        DATEADD('MONTH', -1, NOW()))
+ON CONFLICT (user_id) DO NOTHING;
 
-INSERT INTO REVIEW_TAGS (review_id, tag_order, tags) VALUES (1, 0, 'Effective');
-INSERT INTO REVIEW_TAGS (review_id, tag_order, tags) VALUES (1, 1, 'Gentle');
-INSERT INTO REVIEW_TAGS (review_id, tag_order, tags) VALUES (2, 0, 'Eco-Friendly');
-INSERT INTO REVIEW_TAGS (review_id, tag_order, tags) VALUES (2, 1, 'Works Well');
-INSERT INTO REVIEW_TAGS (review_id, tag_order, tags) VALUES (3, 0, 'Hydrating');
-INSERT INTO REVIEW_TAGS (review_id, tag_order, tags) VALUES (3, 1, 'Good Value');
+INSERT INTO REVIEW_TAGS (review_id, tag_order, tags) VALUES (1, 0, 'Effective') ON CONFLICT (review_id) DO NOTHING;
+INSERT INTO REVIEW_TAGS (review_id, tag_order, tags) VALUES (1, 1, 'Gentle') ON CONFLICT (review_id) DO NOTHING;
+INSERT INTO REVIEW_TAGS (review_id, tag_order, tags) VALUES (2, 0, 'Eco-Friendly') ON CONFLICT (review_id) DO NOTHING;
+INSERT INTO REVIEW_TAGS (review_id, tag_order, tags) VALUES (2, 1, 'Works Well') ON CONFLICT (review_id) DO NOTHING;
+INSERT INTO REVIEW_TAGS (review_id, tag_order, tags) VALUES (3, 0, 'Hydrating') ON CONFLICT (review_id) DO NOTHING; 
+INSERT INTO REVIEW_TAGS (review_id, tag_order, tags) VALUES (3, 1, 'Good Value') ON CONFLICT (review_id) DO NOTHING;
 
-INSERT INTO SAVED_PRODUCTS (user_id, product_id, saved_at) VALUES (3, 1, DATEADD('DAY', -13, NOW()));
-INSERT INTO SAVED_PRODUCTS (user_id, product_id, saved_at) VALUES (3, 2, DATEADD('DAY', -20, NOW()));
-INSERT INTO SAVED_PRODUCTS (user_id, product_id, saved_at) VALUES (3, 3, DATEADD('DAY', -30, NOW()));
+INSERT INTO SAVED_PRODUCTS (user_id, product_id, saved_at) VALUES (3, 1, DATEADD('DAY', -13, NOW())) ON CONFLICT (user_id, product_id) DO NOTHING;
+INSERT INTO SAVED_PRODUCTS (user_id, product_id, saved_at) VALUES (3, 2, DATEADD('DAY', -20, NOW())) ON CONFLICT (user_id, product_id) DO NOTHING;
+INSERT INTO SAVED_PRODUCTS (user_id, product_id, saved_at) VALUES (3, 3, DATEADD('DAY', -30, NOW())) ON CONFLICT (user_id, product_id) DO NOTHING;
