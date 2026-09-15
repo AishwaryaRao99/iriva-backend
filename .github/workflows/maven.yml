@@ -27,7 +27,7 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build and analyze
-      working-directory: iriva-backend/transparency-portal
+      working-directory: transparency-portal
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run:  mvn -B clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \ -Dsonar.organization=YOUR_ORGANIZATION_KEY \ -Dsonar.projectKey=YOUR_BACKEND_PROJECT_KEY 
