@@ -10,7 +10,7 @@ name: Iriva CI with Maven
 
 on:
   push:
-    branches: [ "github-action-learning" ]
+    branches: [ "main" ]
   pull_request:
 
 jobs:
