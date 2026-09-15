@@ -26,9 +26,12 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         cache: maven
-    - name: Build and Test
-      run: mvn clean verify
-      working-directory: transparency-portal
-    # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
-   # - name: Update dependency graph
-    #  uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
+    - name: Build and analyze
+      working-directory: iriva-backend/transparency-portal
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run:  mvn -B clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \ -Dsonar.organization=YOUR_ORGANIZATION_KEY \ -Dsonar.projectKey=YOUR_BACKEND_PROJECT_KEY 
+       
+        # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
+       # - name: Update dependency graph
+        #  uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
