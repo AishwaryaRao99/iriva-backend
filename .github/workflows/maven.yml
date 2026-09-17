@@ -9,19 +9,17 @@
 name: Iriva CI with Maven for Prod Branch
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
+    branches:
+      - main
+
+  push:
+    branches:
+      - main
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
-    env:
-      DB_URL: ${{ secrets.DB_URL }}
-      DB_USERNAME: ${{ secrets.DB_USERNAME }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
     steps:
     - uses: actions/checkout@v4
@@ -35,5 +33,19 @@ jobs:
       working-directory: transparency-portal
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        DB_URL: ${{ secrets.DB_URL }}
+        DB_USERNAME: ${{ secrets.DB_USERNAME }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}        
       run:  mvn -B clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:5.8.0.7211:sonar -Dsonar.organization="${{ vars.SONAR_ORGANIZATION_KEY }}" -Dsonar.projectKey="${{ vars.SONAR_BACKEND_PROJECT_KEY }}"
+
+  deploy:
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  
+    runs-on: ubuntu-latest
+  
+    steps:
+      - name: Deploy to Render
+        run: |
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
        
