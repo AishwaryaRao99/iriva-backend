@@ -2,6 +2,7 @@ package com.aishwarya.ethical.transparency_portal.modules.product.controller;
 
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -80,8 +81,8 @@ public class ProductController {
 	 * Get reviews submitted by all users for a product.
 	 */
 	@GetMapping("/{id}/reviews")
-	public List<ReviewDTO> getProductReviews(@PathVariable Long id) {
-		return profileService.getProductReviews(id);
+	public List<ReviewDTO> getProductReviews(Authentication authentication, @PathVariable Long id) {
+		return profileService.getProductReviews(authentication.getName(), id);
 	}
 
 	@GetMapping("/{id}/review-tags")
