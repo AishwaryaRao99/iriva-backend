@@ -8,6 +8,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,10 +52,11 @@ public class AuthenticationController {
 			// Authenticate user and store user info
 			LoginResult loginResult = authenticationService.authenticate(loginRequest);
 
-			ResponseCookie cookie = ResponseCookie.from("jwt", loginResult.getJwt()).httpOnly(true).secure(false)
-					.path("/").maxAge(Duration.ofHours(1)).sameSite("Lax") // in prod it is none since we use different domains -
-					.build();														// vercel and render for each
-					
+			ResponseCookie cookie = ResponseCookie.from("jwt", loginResult.getJwt()).httpOnly(true).secure(true) // true in production
+					.path("/").maxAge(Duration.ofHours(1)).sameSite("None") // in prod it is none since we use different
+																			// domains -
+					.build(); // vercel and render for each
+
 			log.info("Login successful for user: {}", loginRequest.getUsername());
 
 			return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
@@ -69,8 +71,8 @@ public class AuthenticationController {
 	@PostMapping("/logout")
 	public ResponseEntity<String> logout() {
 
-		ResponseCookie cookie = ResponseCookie.from("jwt", "").httpOnly(true).secure(false) // true in production
-				.path("/").sameSite("Lax").maxAge(0).build();
+		ResponseCookie cookie = ResponseCookie.from("jwt", "").httpOnly(true).secure(true) // true in production
+				.path("/").sameSite("None").maxAge(Duration.ZERO).build(); //same site none since we use different domains
 
 		return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body("Logout successful");
 	}
@@ -86,7 +88,8 @@ public class AuthenticationController {
 			// Register user via AuthenticationService
 			RegisterResponse registerResponse = authenticationService.register(registerRequest);
 
-			log.info("Registration successful for user: {} (ID: {})", registerRequest.getUsername(), registerResponse.getUserId());
+			log.info("Registration successful for user: {} (ID: {})", registerRequest.getUsername(),
+					registerResponse.getUserId());
 
 			// Return 201 Created status with registration details
 			return ResponseEntity.status(org.springframework.http.HttpStatus.CREATED).body(registerResponse);
@@ -102,25 +105,19 @@ public class AuthenticationController {
 		// This endpoint can be used to expose OAuth2 login information if needed
 		return ResponseEntity.ok("OAuth2 login information");
 	}
-	
+
 	@GetMapping("/me")
 	public ResponseEntity<UserDTO> getCurrentUser(Authentication authentication) {
 
-	    String email = authentication.getName();
+		String email = authentication.getName();
 
-	    UserModel user = userService.findByEmail(email);
+		UserModel user = userService.findByEmail(email);
 
-	    return ResponseEntity.ok(convertToDTO(user));
+		return ResponseEntity.ok(convertToDTO(user));
 	}
-	
+
 	private UserDTO convertToDTO(UserModel user) {
-	    return new UserDTO(
-	        user.getId(),
-	        user.getDisplayName(),
-	        user.getEmail(),
-	        user.getUsername(),
-	        user.getRole(),
-	        user.getProfileImageUrl()
-	    );
+		return new UserDTO(user.getId(), user.getDisplayName(), user.getEmail(), user.getUsername(), user.getRole(),
+				user.getProfileImageUrl());
 	}
 }

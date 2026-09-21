@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -44,13 +45,17 @@ public class SecurityConfig {
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-		http.csrf(csrf -> csrf.disable()) // Disabled for stateless REST API
+		http.csrf(csrf -> csrf.disable()) //revisit when we have a frontend that can handle CSRF tokens
 				.cors(Customizer.withDefaults())
 				.authorizeHttpRequests(auth -> auth
+						
+						.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 						// ========== PUBLIC ENDPOINTS (No authentication required) ==========
 
 						// Authentication endpoints - Allow unauthenticated login
 						.requestMatchers("/auth/**").permitAll()
+						
+						.requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
 
 						// Product API endpoints - Allow public product browsing
 						.requestMatchers("/api/v1/productsapi/**").permitAll()
@@ -62,7 +67,7 @@ public class SecurityConfig {
 						.requestMatchers("/api/test/**").permitAll()
 
 						// for h2 console access - dev purposes only -- change this in prod
-						.requestMatchers("/h2-console/**").permitAll()
+						//.requestMatchers("/h2-console/**").permitAll()
 						
 						//for static images
 						.requestMatchers("/images/products/**").permitAll()
@@ -85,7 +90,7 @@ public class SecurityConfig {
 				.exceptionHandling(exception -> exception
 					    .authenticationEntryPoint(authenticationEntryPoint))
 
-				.headers(headers -> headers.frameOptions(frame -> frame.disable()))
+				.headers(headers -> headers.frameOptions(frame -> frame.deny()))  // Prevent clickjacking attacks
 
 				// OAuth2 Login Configuration - for "Continue with Google"
 				.oauth2Login(oauth2 -> oauth2
@@ -115,13 +120,13 @@ public class SecurityConfig {
 	    CorsConfiguration configuration = new CorsConfiguration();
 
 	    configuration.setAllowedOrigins(
-	            List.of("http://localhost:5173"));
+	            List.of("https://iriva-frontend.vercel.app"));
 
 	    configuration.setAllowedMethods(
 	            List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-
+	    
 	    configuration.setAllowedHeaders(
-	            List.of("*"));
+	            List.of("Authorization", "Content-Type", "Accept", "Origin"));
 
 	    configuration.setAllowCredentials(true);
 

@@ -23,6 +23,3 @@ spring:
             client-secret: ${GOOGLE_CLIENT_SECRET}
             scope: openid,profile,email
             redirect-uri: ${OAUTH2_REDIRECT_URI:https://your-production-domain.com/transparency-portal/login/oauth2/code/google}
-
-oauth2:
-  redirect-url: ${OAUTH2_REDIRECT_URL:https://your-production-domain.com}

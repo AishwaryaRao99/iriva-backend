@@ -14,7 +14,7 @@ VALUES ('admin', 'Admin', 'ROLE_ADMIN', 'admin@example.com',
 INSERT INTO users (username, display_name, role, email, password, created_at, updated_at)
 VALUES ('sarah_mitchell', 'Sarah Mitchell', 'ROLE_USER', 'sarah.mitchell@email.com',
         '$2a$12$O718yic3jvorcrL9cmaRjOJWsr0W0UIFirtysqMsM9mrzgwJ1xa0.',
-        DATEADD('MONTH', -17, NOW()), NOW());
+         NOW() - INTERVAL '17 months', NOW());
 
 ----------------------------------------------------- PRODUCTS TABLE -----------------------------------------------------------
 -- ========== SKINCARE PRODUCTS ==========
@@ -23,8 +23,8 @@ VALUES ('sarah_mitchell', 'Sarah Mitchell', 'ROLE_USER', 'sarah.mitchell@email.c
 INSERT INTO PRODUCTS (product_name, DESCRIPTION, IMAGE_URL, BRAND, ETHICAL_SCORE, TRANSPARENCY_SCORE, CATEGORY)
 VALUES ('Burt''s Bees Very Volumizing Pomegranate Shampoo',
 'Natural shampoo made with pomegranate seed oil, free of sulfates and parabens. Made with 99.6% natural ingredients.',
-	'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=500&q=80',
-	'Burt''s Bees', 9.1, 9.3, 'SKINCARE');
+'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=500&q=80',
+'Burt''s Bees', 9.1, 9.3, 'SKINCARE');
 
 
 INSERT INTO ETHICAL_ITEMS (product_id, title, description, icon) VALUES
@@ -38,7 +38,7 @@ INSERT INTO INGREDIENT_ITEMS (product_id, name, description, safety_status) VALU
 (1, 'Herbal Extracts', 'Blend of natural plant extracts', 'Safe');
 
 INSERT INTO SCORE_BREAKDOWNS (ingredient_transparency, ethical_certifications, manufacturing_info, sourcing_transparency)
-VALUES (92, 94, 90, 91);
+VALUES (92, 94, 90, 91) ;
 
 INSERT INTO TRANSPARENCY_ANALYSES (score_breakdown_id, score_high_reasons_json, improvement_areas_json)
 VALUES (1, '["Natural ingredients with full transparency", "Certified by Leaping Bunny for cruelty-free practices", "Manufacturing location disclosed", "Sustainable sourcing practices documented"]',
@@ -55,6 +55,7 @@ VALUES ('CeraVe Moisturizing Cream',
 'CeraVe', 8.8, 9.1, 'SKINCARE');
 
 
+
 INSERT INTO ETHICAL_ITEMS (product_id, title, description, icon) VALUES
 (2, 'Dermatologist Approved', 'Tested and recommended by dermatologists', 'doctor-icon'),
 (2, 'Hypoallergenic Formula', 'Safe for sensitive skin', 'shield-icon'),
@@ -66,7 +67,7 @@ INSERT INTO INGREDIENT_ITEMS (product_id, name, description, safety_status) VALU
 (2, 'Niacinamide', 'Vitamin B3 for skin strengthening', 'Safe');
 
 INSERT INTO SCORE_BREAKDOWNS (ingredient_transparency, ethical_certifications, manufacturing_info, sourcing_transparency)
-VALUES (88, 85, 90, 87);
+VALUES (88, 85, 90, 87) ;
 
 INSERT INTO TRANSPARENCY_ANALYSES (score_breakdown_id, score_high_reasons_json, improvement_areas_json)
 VALUES (2, '["Complete INCI naming of ingredients", "Dermatologist tested and approved", "Manufacturing standards disclosed", "Paraben-free and cruelty-free commitment"]',
@@ -81,6 +82,7 @@ VALUES ('Drunk Elephant C-Firma Fresh Vitamin C Serum',
 'Potent vitamin C serum designed to brighten the complexion and fight environmental stressors. Clean, cruelty-free beauty.',
 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=500&q=80',
 'Drunk Elephant', 8.9, 9.4, 'SKINCARE');
+
 
 
 INSERT INTO ETHICAL_ITEMS (product_id, title, description, icon) VALUES
@@ -139,7 +141,7 @@ UPDATE PRODUCTS SET transparency_analysis_id = 4 WHERE id = 4;
 INSERT INTO PRODUCTS (product_name, DESCRIPTION, IMAGE_URL, BRAND, ETHICAL_SCORE, TRANSPARENCY_SCORE, CATEGORY)
 VALUES ('Fair Trade Certified Organic Coffee',
 'Single-origin organic coffee beans from Ethiopian smallholder farmers. Fair trade certified with full traceability.',
-'http://localhost:8080/transparency-portal/images/products/coffee.jpg',
+'https://iriva-backend.onrender.com/transparency-portal/images/products/coffee.jpg',
 'Equal Exchange', 9.3, 9.5, 'FOOD');
 
 
@@ -167,7 +169,7 @@ UPDATE PRODUCTS SET transparency_analysis_id = 5 WHERE id = 5;
 INSERT INTO PRODUCTS (product_name, DESCRIPTION, IMAGE_URL, BRAND, ETHICAL_SCORE, TRANSPARENCY_SCORE, CATEGORY)
 VALUES ('Organic Raw Almond Butter',
 'Cold-pressed almonds from certified organic orchards. No added sugars, oils, or salt. Verified sustainable sourcing.',
-'http://localhost:8080/transparency-portal/images/products/almond.jpg',
+'https://iriva-backend.onrender.com/transparency-portal/images/products/almond.jpg',
 'Barney Butter', 8.7, 8.9, 'FOOD');
 
 
@@ -182,7 +184,8 @@ INSERT INTO INGREDIENT_ITEMS (product_id, name, description, safety_status) VALU
 (6, 'Healthy Fats', 'Monounsaturated and polyunsaturated fats', 'Safe');
 
 INSERT INTO SCORE_BREAKDOWNS (ingredient_transparency, ethical_certifications, manufacturing_info, sourcing_transparency)
-VALUES (85, 88, 86, 87);
+VALUES (85, 88, 86, 87)
+;
 
 INSERT INTO TRANSPARENCY_ANALYSES (score_breakdown_id, score_high_reasons_json, improvement_areas_json)
 VALUES (6, '["Organic certification from USDA", "Cold-press manufacturing process disclosed", "Farm locations in California disclosed", "Nutritional benefits clearly labeled"]',
@@ -195,7 +198,7 @@ UPDATE PRODUCTS SET transparency_analysis_id = 6 WHERE id = 6;
 INSERT INTO PRODUCTS (product_name, DESCRIPTION, IMAGE_URL, BRAND, ETHICAL_SCORE, TRANSPARENCY_SCORE, CATEGORY)
 VALUES ('Rainforest Alliance Certified Chocolate Bar',
 'Single-origin dark chocolate (72% cacao) from responsibly managed farms. Supports forest conservation.',
-'http://localhost:8080/transparency-portal/images/products/chocolate.jpg',
+'https://iriva-backend.onrender.com/transparency-portal/images/products/chocolate.jpg',
 'Tony''s Chocolonely', 9.2, 9.4, 'FOOD');
 
 
@@ -225,7 +228,7 @@ UPDATE PRODUCTS SET transparency_analysis_id = 7 WHERE id = 7;
 INSERT INTO PRODUCTS (product_name, DESCRIPTION, IMAGE_URL, BRAND, ETHICAL_SCORE, TRANSPARENCY_SCORE, CATEGORY)
 VALUES ('USDA Organic Certified Blueberries',
 'Freshly harvested organic blueberries from family farms with complete supply chain transparency. Non-GMO verified.',
-'http://localhost:8080/transparency-portal/images/products/blueberries.jpg',
+'https://iriva-backend.onrender.com/transparency-portal/images/products/blueberries.jpg',
 'Nature''s Harvest', 8.8, 8.7, 'FOOD');
 
 
@@ -254,7 +257,7 @@ UPDATE PRODUCTS SET transparency_analysis_id = 8 WHERE id = 8;
 INSERT INTO PRODUCTS (product_name, DESCRIPTION, IMAGE_URL, BRAND, ETHICAL_SCORE, TRANSPARENCY_SCORE, CATEGORY)
 VALUES ('Ecos Hypoallergenic All-Purpose Cleaner',
 'Plant-based, non-toxic all-purpose cleaner. Vegan, cruelty-free, and biodegradable. EPA certified Safer Choice product.',
-'http://localhost:8080/transparency-portal/images/products/spray.jpg',
+'https://iriva-backend.onrender.com/transparency-portal/images/products/spray.jpg',
 'ECOS', 8.9, 9.2, 'CLEANING');
 
 
@@ -283,8 +286,9 @@ UPDATE PRODUCTS SET transparency_analysis_id = 9 WHERE id = 9;
 INSERT INTO PRODUCTS (product_name, DESCRIPTION, IMAGE_URL, BRAND, ETHICAL_SCORE, TRANSPARENCY_SCORE, CATEGORY)
 VALUES ('Seventh Generation Free & Clear Laundry Detergent',
 'Hypoallergenic laundry detergent free of dyes and perfumes. Plant-derived ingredients, biodegradable, and cruelty-free.',
-'http://localhost:8080/transparency-portal/images/products/detergent.jpg',
+'https://iriva-backend.onrender.com/transparency-portal/images/products/detergent.jpg',
 'Seventh Generation', 9.0, 9.1, 'CLEANING');
+
 
 
 INSERT INTO ETHICAL_ITEMS (product_id, title, description, icon) VALUES
@@ -312,7 +316,7 @@ UPDATE PRODUCTS SET transparency_analysis_id = 10 WHERE id = 10;
 INSERT INTO PRODUCTS (product_name, DESCRIPTION, IMAGE_URL, BRAND, ETHICAL_SCORE, TRANSPARENCY_SCORE, CATEGORY)
 VALUES ('Nellie''s All Natural Laundry Soda',
 'Zero-waste laundry detergent concentrate made from naturally sourced minerals. Biodegradable and septic safe.',
-'http://localhost:8080/transparency-portal/images/products/spray.jpg',
+'https://iriva-backend.onrender.com/transparency-portal/images/products/spray.jpg',
 'Nellie''s', 9.1, 9.0, 'CLEANING');
 
 
@@ -341,7 +345,7 @@ UPDATE PRODUCTS SET transparency_analysis_id = 11 WHERE id = 11;
 INSERT INTO PRODUCTS (product_name, DESCRIPTION, IMAGE_URL, BRAND, ETHICAL_SCORE, TRANSPARENCY_SCORE, CATEGORY)
 VALUES ('Mrs. Meyer''s Clean Day Multi-Surface Cleaner',
 'Plant-derived formula with essential oils. Cruelty-free, USDA bio-based certified, and made with renewable resources.',
-'http://localhost:8080/transparency-portal/images/products/detergent.jpg',
+'https://iriva-backend.onrender.com/transparency-portal/images/products/detergent.jpg',
 'Mrs. Meyer''s Clean Day', 8.7, 8.8, 'CLEANING');
 
 
@@ -372,7 +376,7 @@ UPDATE PRODUCTS SET transparency_analysis_id = 12 WHERE id = 12;
 INSERT INTO PRODUCTS (product_name, DESCRIPTION, IMAGE_URL, BRAND, ETHICAL_SCORE, TRANSPARENCY_SCORE, CATEGORY)
 VALUES ('Regenerative Organic Certified Denim Jeans',
 'Made from regenerative organic cotton. Fair labor practices verified, transparent supply chain, plastic-free packaging.',
-'http://localhost:8080/transparency-portal/images/products/jeans.jpg',
+'https://iriva-backend.onrender.com/transparency-portal/images/products/jeans.jpg',
 'Patagonia', 9.4, 9.6, 'FASHION');
 
 
@@ -391,7 +395,8 @@ INSERT INTO SCORE_BREAKDOWNS (ingredient_transparency, ethical_certifications, m
 VALUES (96, 95, 94, 96);
 
 INSERT INTO TRANSPARENCY_ANALYSES (score_breakdown_id, score_high_reasons_json, improvement_areas_json)
-VALUES (13, '["Regenerative Organic Certification verified", "Complete supply chain transparency published", "Fair trade labor practices documented", "Sustainability reports publicly available", "Carbon footprint tracking disclosed"]',
+VALUES (13, '["Regenerative Organic Certification verified", "Complete supply chain transparency published", "Fair trade labor practices documented", 
+"Sustainability reports publicly available", "Carbon footprint tracking disclosed"]',
 '["Premium pricing may limit market accessibility", "Could expand to more product lines"]');
 
 
@@ -430,7 +435,7 @@ UPDATE PRODUCTS SET transparency_analysis_id = 14 WHERE id = 14;
 INSERT INTO PRODUCTS (product_name, DESCRIPTION, IMAGE_URL, BRAND, ETHICAL_SCORE, TRANSPARENCY_SCORE, CATEGORY)
 VALUES ('Ethically Made Organic Cotton Socks',
 'GOTS certified organic cotton with fair trade certification. Complete transparency from farm to consumer.',
-'http://localhost:8080/transparency-portal/images/products/socks.jpg',
+'https://iriva-backend.onrender.com/transparency-portal/images/products/socks.jpg',
 'Everlane', 8.9, 9.2, 'FASHION');
 
 
@@ -459,7 +464,8 @@ UPDATE PRODUCTS SET transparency_analysis_id = 15 WHERE id = 15;
 INSERT INTO PRODUCTS (product_name, DESCRIPTION, IMAGE_URL, BRAND, ETHICAL_SCORE, TRANSPARENCY_SCORE, CATEGORY)
 VALUES ('Fair Trade Certified Linen Blazer',
 'European-made linen with fair trade certification. Biodegradable materials and ethical labor practices throughout supply chain.',
-'http://localhost:8080/transparency-portal/images/products/blazer.jpg',
+
+'https://iriva-backend.onrender.com/transparency-portal/images/products/blazer.jpg',
 'People Tree', 9.3, 9.5, 'FASHION');
 
 
@@ -484,27 +490,32 @@ VALUES (16, '["Fair Trade certification verified", "European manufacturing stand
 
 UPDATE PRODUCTS SET transparency_analysis_id = 16 WHERE id = 16;
 
--- Sarah's seeded reviews use the real products above.
+-- Review Data
+
 INSERT INTO REVIEWS (user_id, product_id, rating, comment, created_at)
 VALUES (3, 1, 5,
         'Love how transparent this brand is about their ingredients. Finally found a serum that works!',
-        DATEADD('DAY', -14, NOW()));
+        NOW() - INTERVAL '14 days');
+
+
 INSERT INTO REVIEWS (user_id, product_id, rating, comment, created_at)
 VALUES (3, 2, 5,
         'Amazing product! Cleans well and I love that it''s completely transparent about ingredients.',
-        DATEADD('DAY', -21, NOW()));
+        NOW() - INTERVAL '21 days');
+
 INSERT INTO REVIEWS (user_id, product_id, rating, comment, created_at)
 VALUES (3, 3, 4,
         'Great moisturizer but wish the packaging was more sustainable. Otherwise very happy with it.',
-        DATEADD('MONTH', -1, NOW()));
+        NOW() - INTERVAL '1 month');
 
-INSERT INTO REVIEW_TAGS (review_id, tag_order, tags) VALUES (1, 0, 'Effective');
-INSERT INTO REVIEW_TAGS (review_id, tag_order, tags) VALUES (1, 1, 'Gentle');
-INSERT INTO REVIEW_TAGS (review_id, tag_order, tags) VALUES (2, 0, 'Eco-Friendly');
-INSERT INTO REVIEW_TAGS (review_id, tag_order, tags) VALUES (2, 1, 'Works Well');
-INSERT INTO REVIEW_TAGS (review_id, tag_order, tags) VALUES (3, 0, 'Hydrating');
-INSERT INTO REVIEW_TAGS (review_id, tag_order, tags) VALUES (3, 1, 'Good Value');
 
-INSERT INTO SAVED_PRODUCTS (user_id, product_id, saved_at) VALUES (3, 1, DATEADD('DAY', -13, NOW()));
-INSERT INTO SAVED_PRODUCTS (user_id, product_id, saved_at) VALUES (3, 2, DATEADD('DAY', -20, NOW()));
-INSERT INTO SAVED_PRODUCTS (user_id, product_id, saved_at) VALUES (3, 3, DATEADD('DAY', -30, NOW()));
+INSERT INTO REVIEW_TAGS (review_id, tag_order, tags) VALUES (1, 0, 'Effective') ;
+INSERT INTO REVIEW_TAGS (review_id, tag_order, tags) VALUES (1, 1, 'Gentle') ;
+INSERT INTO REVIEW_TAGS (review_id, tag_order, tags) VALUES (2, 0, 'Eco-Friendly') ;
+INSERT INTO REVIEW_TAGS (review_id, tag_order, tags) VALUES (2, 1, 'Works Well') ;
+INSERT INTO REVIEW_TAGS (review_id, tag_order, tags) VALUES (3, 0, 'Hydrating') ; 
+INSERT INTO REVIEW_TAGS (review_id, tag_order, tags) VALUES (3, 1, 'Good Value') ;
+
+INSERT INTO SAVED_PRODUCTS (user_id, product_id, saved_at) VALUES (3, 1, NOW() - INTERVAL '13 days') ;
+INSERT INTO SAVED_PRODUCTS (user_id, product_id, saved_at) VALUES (3, 2, NOW() - INTERVAL '20 days') ;
+INSERT INTO SAVED_PRODUCTS (user_id, product_id, saved_at) VALUES (3, 3, NOW() - INTERVAL '30 days') ;

@@ -12,7 +12,7 @@ spring:
   application:
     name: transparency-portal
   profiles: 
-      active: dev
+      active: prod
   servlet:
     multipart:
       max-file-size: 20MB
@@ -24,9 +24,3 @@ jwt:
 
 oauth2:
   redirect-url: ${OAUTH2_REDIRECT_URL:http://localhost:5173}
-  
-logging:
-  level:
-    org:
-      springframework:
-        security: DEBUG

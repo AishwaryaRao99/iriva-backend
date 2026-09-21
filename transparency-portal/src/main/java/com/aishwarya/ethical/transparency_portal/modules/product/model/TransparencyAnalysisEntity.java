@@ -2,13 +2,13 @@ package com.aishwarya.ethical.transparency_portal.modules.product.model;
 
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -28,10 +28,10 @@ public class TransparencyAnalysisEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Lob
+	@Column(columnDefinition = "jsonb")
 	private String scoreHighReasonsJson;
 
-	@Lob
+	@Column(columnDefinition = "jsonb")
 	private String improvementAreasJson;
 
 	@OneToOne
