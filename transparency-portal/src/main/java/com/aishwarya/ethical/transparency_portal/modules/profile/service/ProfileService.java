@@ -29,6 +29,9 @@ import com.aishwarya.ethical.transparency_portal.modules.user.service.UserServic
 
 import lombok.RequiredArgsConstructor;
 
+// Null type safety is not enabled for this file, 
+// so we need to handle nulls carefully. 
+// The code assumes that the user and product exist when performing operations, and throws exceptions if they do not.
 @Service
 @RequiredArgsConstructor
 public class ProfileService {
