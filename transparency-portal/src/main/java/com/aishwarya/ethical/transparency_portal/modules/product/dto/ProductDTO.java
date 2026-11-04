@@ -4,11 +4,12 @@ import java.util.List;
 import com.aishwarya.ethical.transparency_portal.modules.product.model.EthicalItem;
 import com.aishwarya.ethical.transparency_portal.modules.product.model.IngredientItem;
 import com.aishwarya.ethical.transparency_portal.modules.product.model.ProductCategory;
-import com.aishwarya.ethical.transparency_portal.modules.product.model.TransparencyAnalysis;
+import com.aishwarya.ethical.transparency_portal.modules.product.model.ProductInsights;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -47,11 +48,18 @@ public class ProductDTO {
     @DecimalMin(value = "0.0", inclusive = true, message = "Ethical score must be at least 0")
     @DecimalMax(value = "100.0", inclusive = true, message = "Ethical score cannot exceed 100")
     private double ethicalScore;
-    
-    @NotNull(message = "Transparency score is required")
-    @DecimalMin(value = "0.0", inclusive = true, message = "Transparency score must be at least 0")
-    @DecimalMax(value = "100.0", inclusive = true, message = "Transparency score cannot exceed 100")
-    private double transparencyScore;
+
+    @NotBlank(message = "Ingredient safety is required")
+    @Pattern(regexp = "High|Moderate|Low", message = "Ingredient safety must be High, Moderate, or Low")
+    private String ingredientSafety;
+
+    @NotBlank(message = "Information quality is required")
+    @Pattern(regexp = "High|Moderate|Low", message = "Information quality must be High, Moderate, or Low")
+    private String informationQuality;
+
+    @NotBlank(message = "Evidence quality is required")
+    @Pattern(regexp = "High|Moderate|Low", message = "Evidence quality must be High, Moderate, or Low")
+    private String evidenceQuality;
     
     @NotNull(message = "Product category is required")
     private ProductCategory category;
@@ -60,5 +68,5 @@ public class ProductDTO {
     
     private List<IngredientItem> ingredients;
     
-    private TransparencyAnalysis transparencyAnalysis;
+    private ProductInsights productInsights;
 }

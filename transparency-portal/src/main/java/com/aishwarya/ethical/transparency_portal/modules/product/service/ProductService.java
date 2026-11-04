@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.aishwarya.ethical.transparency_portal.exception_handling.ProductNotFoundException;
@@ -19,10 +20,9 @@ import com.aishwarya.ethical.transparency_portal.modules.product.model.EthicalIt
 import com.aishwarya.ethical.transparency_portal.modules.product.model.IngredientItem;
 import com.aishwarya.ethical.transparency_portal.modules.product.model.IngredientItemEntity;
 import com.aishwarya.ethical.transparency_portal.modules.product.model.ProductCategory;
+import com.aishwarya.ethical.transparency_portal.modules.product.model.ProductInsights;
+import com.aishwarya.ethical.transparency_portal.modules.product.model.ProductInsightsEntity;
 import com.aishwarya.ethical.transparency_portal.modules.product.model.ProductModel;
-import com.aishwarya.ethical.transparency_portal.modules.product.model.ScoreBreakdown;
-import com.aishwarya.ethical.transparency_portal.modules.product.model.TransparencyAnalysis;
-import com.aishwarya.ethical.transparency_portal.modules.product.model.TransparencyAnalysisEntity;
 import com.aishwarya.ethical.transparency_portal.modules.product.repository.ProductRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -88,11 +88,13 @@ public class ProductService {
 				model.getImageUrl(),
 				model.getBrand(),
 				model.getEthicalScore(),
-				model.getTransparencyScore(),
+				model.getIngredientSafety(),
+				model.getInformationQuality(),
+				model.getEvidenceQuality(),
 				model.getCategory(),
 				convertEthicalItemsEntityToDTO(model.getEthicalSummary()),
 				convertIngredientsEntityToDTO(model.getIngredients()),
-				convertTransparencyAnalysisEntityToDTO(model.getTransparencyAnalysis())
+				convertProductInsightsEntityToDTO(model.getProductInsights())
 		);
 	}
 	
@@ -124,52 +126,36 @@ public class ProductService {
 			item.setName(entity.getName());
 			item.setDescription(entity.getDescription());
 			item.setSafetyStatus(entity.getSafetyStatus());
+			item.setInciName(entity.getInciName());
 			return item;
 		}).toList();
 	}
 	
-	/**
-	 * Converts TransparencyAnalysisEntity to TransparencyAnalysis (DTO format).
-	 */
-	private TransparencyAnalysis convertTransparencyAnalysisEntityToDTO(TransparencyAnalysisEntity entity) {
+	private ProductInsights convertProductInsightsEntityToDTO(ProductInsightsEntity entity) {
 		if (entity == null) {
 			return null;
 		}
-		TransparencyAnalysis analysis = new TransparencyAnalysis();
-		
-		// Parse JSON strings back to lists
+		ProductInsights insights = new ProductInsights();
+		insights.setInformationQualitySummary(entity.getInformationQualitySummary());
+		insights.setEvidenceQualitySummary(entity.getEvidenceQualitySummary());
 		try {
-			if (entity.getScoreHighReasonsJson() != null) {
-				List<String> reasons = objectMapper.readValue(
-					entity.getScoreHighReasonsJson(),
+			if (entity.getFindingsJson() != null) {
+				insights.setFindings(objectMapper.readValue(
+					entity.getFindingsJson(),
 					objectMapper.getTypeFactory().constructCollectionType(List.class, String.class)
-				);
-				analysis.setScoreHighReasons(reasons);
+				));
 			}
-			if (entity.getImprovementAreasJson() != null) {
-				List<String> areas = objectMapper.readValue(
-					entity.getImprovementAreasJson(),
+			if (entity.getSourcesJson() != null) {
+				insights.setSources(objectMapper.readValue(
+					entity.getSourcesJson(),
 					objectMapper.getTypeFactory().constructCollectionType(List.class, String.class)
-				);
-				analysis.setImprovementAreas(areas);
+				));
 			}
 		} catch (Exception e) {
-			// If parsing fails, set empty lists
-			analysis.setScoreHighReasons(new java.util.ArrayList<>());
-			analysis.setImprovementAreas(new java.util.ArrayList<>());
+			insights.setFindings(new java.util.ArrayList<>());
+			insights.setSources(new java.util.ArrayList<>());
 		}
-		
-		// Convert ScoreBreakdownEntity to ScoreBreakdown
-		if (entity.getScoreBreakdown() != null) {
-			ScoreBreakdown breakdown = new ScoreBreakdown();
-			breakdown.setIngredientTransparency(entity.getScoreBreakdown().getIngredientTransparency());
-			breakdown.setEthicalCertifications(entity.getScoreBreakdown().getEthicalCertifications());
-			breakdown.setManufacturingInfo(entity.getScoreBreakdown().getManufacturingInfo());
-			breakdown.setSourcingTransparency(entity.getScoreBreakdown().getSourcingTransparency());
-			analysis.setScoreBreakdown(breakdown);
-		}
-		
-		return analysis;
+		return insights;
 	}
 
 
@@ -268,7 +254,7 @@ public class ProductService {
 	 * Get products by category with pagination and sorting.
 	 * 
 	 */
-	public PageResponse<ProductDTO> getProductsByCategoryPaginated(String category, int pageNumber, int pageSize, String sortBy, String sortDirection) {
+	public PageResponse<ProductDTO> getProductsByCategoryPaginated(String category, int pageNumber, int pageSize, String sortBy, @NonNull String sortDirection) {
 		if (category == null || category.trim().isEmpty()) {
 			throw new IllegalArgumentException("Category must not be empty.");
 		}
@@ -302,7 +288,7 @@ public class ProductService {
 	/**
 	 * Search products by name with pagination and sorting.
 	 */
-	public PageResponse<ProductDTO> searchProductsByNamePaginated(String name, int pageNumber, int pageSize, String sortBy, String sortDirection) {
+	public PageResponse<ProductDTO> searchProductsByNamePaginated(String name, int pageNumber, int pageSize, String sortBy, @NonNull String sortDirection) {
 		if (name == null || name.trim().isEmpty()) {
 			throw new IllegalArgumentException("Product name must not be empty.");
 		}
@@ -435,7 +421,7 @@ public class ProductService {
 	/**
 	 * Search products by brand with pagination and sorting.
 	 */
-	public PageResponse<ProductDTO> searchProductsByBrand(String brand, int pageNumber, int pageSize, String sortBy, String sortDirection) {
+	public PageResponse<ProductDTO> searchProductsByBrand(String brand, int pageNumber, int pageSize, String sortBy, @NonNull String sortDirection) {
 		if (brand == null || brand.trim().isEmpty()) {
 			throw new IllegalArgumentException("Brand name must not be empty.");
 		}
@@ -526,15 +512,17 @@ public class ProductService {
 	/**
 	 * Parses sort direction string to Sort.Direction enum.
 	 */
-	private Sort.Direction parseSortDirection(String direction) {
-		if (direction == null || direction.trim().isEmpty()) {
+	private Sort.Direction parseSortDirection(@NonNull String direction) {
+		if (direction.trim().isEmpty()) {
 			return Sort.Direction.ASC;
 		}
-		try {
-			return Sort.Direction.fromString(direction.toUpperCase());
-		} catch (IllegalArgumentException e) {
-			throw new IllegalArgumentException("Invalid sort direction. Use ASC or DESC.");
-		}
+		else {
+			try {
+				return Sort.Direction.fromString(direction.toUpperCase());
+			} catch (IllegalArgumentException e) {
+				throw new IllegalArgumentException("Invalid sort direction. Use ASC or DESC.");
+			}
+		}		
 	}
 
 	/**

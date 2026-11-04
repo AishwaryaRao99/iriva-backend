@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,7 +58,7 @@ public class ProfileService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReviewDTO> getProductReviews(String loginIdentifier, Long productId) {
+    public List<ReviewDTO> getProductReviews(String loginIdentifier, @NonNull Long productId) {
         if (!productRepository.existsById(productId)) {
             throw new ProductNotFoundException("Product not found with id: " + productId);
         }
@@ -73,7 +74,7 @@ public class ProfileService {
     }
 
     @Transactional
-    public boolean saveProduct(String loginIdentifier, Long productId) {
+    public boolean saveProduct(String loginIdentifier, @NonNull Long productId) {
         UserModel user = currentUser(loginIdentifier);
         ProductModel product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + productId));
@@ -88,7 +89,7 @@ public class ProfileService {
     }
 
     @Transactional(readOnly = true)
-    public boolean isProductSaved(String loginIdentifier, Long productId) {
+    public boolean isProductSaved(String loginIdentifier, @NonNull Long productId) {
         UserModel user = currentUser(loginIdentifier);
         if (!productRepository.existsById(productId)) {
             throw new ProductNotFoundException("Product not found with id: " + productId);
@@ -131,7 +132,7 @@ public class ProfileService {
     }
 
     @Transactional
-    public void deleteReview(String loginIdentifier, Long reviewId) {
+    public void deleteReview(@NonNull String loginIdentifier, @NonNull Long reviewId) {
         reviewRepository.delete(findOwnedReview(loginIdentifier, reviewId));
     }
 

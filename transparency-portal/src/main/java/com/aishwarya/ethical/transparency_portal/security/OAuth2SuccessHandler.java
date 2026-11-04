@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -66,6 +65,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 				log.info("JWT token generated for OAuth2 user: {}", email);
 
 				// Set JWT as HTTP-only cookie with secure settings
+				
+				@SuppressWarnings("null")
 				ResponseCookie cookie = ResponseCookie.from("jwt", jwt)
 						.httpOnly(true)
 						.secure(false) // Set to true in production with HTTPS
@@ -96,29 +97,5 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 			return Collections.singletonList(roleString);
 		}
 		return Collections.singletonList("ROLE_USER");
-	}
-
-	/**
-	 * Send authentication response with user details to frontend
-	 */
-	private void sendAuthenticationResponse(HttpServletResponse response, String jwt, UserModel user)
-			throws IOException {
-		
-		response.setContentType("application/json");
-		response.setStatus(HttpServletResponse.SC_OK);
-
-		Map<String, Object> body = Map.of(
-			"success", true,
-			"message", "OAuth2 authentication successful",
-			"user", Map.of(
-				"id", user.getId(),
-				"email", user.getEmail(),
-				"username", user.getUsername(),
-				"role", user.getRole()
-			),
-			"token", jwt
-		);
-
-		response.getWriter().write(objectMapper.writeValueAsString(body));
 	}
 }

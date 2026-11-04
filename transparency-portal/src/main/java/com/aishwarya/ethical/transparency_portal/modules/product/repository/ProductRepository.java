@@ -1,10 +1,6 @@
 package com.aishwarya.ethical.transparency_portal.modules.product.repository;
 
-import com.aishwarya.ethical.transparency_portal.modules.product.model.ProductCategory;
-import com.aishwarya.ethical.transparency_portal.modules.product.model.ProductModel;
-
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +9,9 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import com.aishwarya.ethical.transparency_portal.modules.product.model.ProductCategory;
+import com.aishwarya.ethical.transparency_portal.modules.product.model.ProductModel;
 
 @Repository
 public interface ProductRepository extends JpaRepository<ProductModel, Long>, JpaSpecificationExecutor<ProductModel> {

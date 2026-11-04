@@ -1,6 +1,7 @@
 package com.aishwarya.ethical.transparency_portal.exception_handling;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 
 import lombok.Getter;
 
@@ -17,12 +18,19 @@ public enum ErrorCode {
 
 	    private final String code;     
 	    private final String message;
+	    
+	    @NonNull
 	    private final HttpStatus status;
 
-	    ErrorCode(String code, String message, HttpStatus status) {
+	    ErrorCode(String code, String message, @NonNull HttpStatus status) {
 	        this.code = code;
 	        this.message = message;
 	        this.status = status;
+	    }
+	    
+	    @NonNull
+	    public HttpStatus getStatus() {
+	        return status;
 	    }
 	
 

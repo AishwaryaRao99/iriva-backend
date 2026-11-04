@@ -43,6 +43,12 @@ public class ProductModel {
 
 	private double transparencyScore;
 
+	private String ingredientSafety;
+
+	private String informationQuality;
+
+	private String evidenceQuality;
+
 	@Enumerated(EnumType.STRING)
 	private ProductCategory category;
 	
@@ -55,5 +61,8 @@ public class ProductModel {
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "transparency_analysis_id", foreignKey = @ForeignKey(name = "fk_product_transparency_analysis"))
 	private TransparencyAnalysisEntity transparencyAnalysis;    
+
+	@OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+	private ProductInsightsEntity productInsights;
 
 }

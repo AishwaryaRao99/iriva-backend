@@ -23,6 +23,8 @@ import com.aishwarya.ethical.transparency_portal.modules.profile.dto.ReviewReque
 import com.aishwarya.ethical.transparency_portal.modules.profile.dto.SaveProductResponse;
 import com.aishwarya.ethical.transparency_portal.modules.profile.service.ProfileService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -34,6 +36,8 @@ public class ProfileController {
     private final ProfileService profileService;
     private final ProductService productService;
 
+    @Operation(summary = "Get user profile")
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping
     public ProfileDTO getProfile(Authentication authentication) {
         return profileService.getProfile(authentication.getName());

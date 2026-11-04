@@ -28,3 +28,8 @@ spring:
             client-secret: ${GOOGLE_CLIENT_SECRET:fjbsfGOCSsfsfhDcoWfsdfnwuaLRHgzeyx}
             scope: openid,profile,email
             redirect-uri: "http://localhost:8080/transparency-portal/login/oauth2/code/google"
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus

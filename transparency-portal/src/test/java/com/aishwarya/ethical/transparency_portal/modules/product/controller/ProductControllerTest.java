@@ -17,6 +17,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.aishwarya.ethical.transparency_portal.modules.product.dto.ProductCategoryDTO;
+import com.aishwarya.ethical.transparency_portal.modules.product.dto.ProductDTO;
+import com.aishwarya.ethical.transparency_portal.modules.product.model.IngredientItem;
+import com.aishwarya.ethical.transparency_portal.modules.product.model.ProductCategory;
+import com.aishwarya.ethical.transparency_portal.modules.product.model.ProductInsights;
 import com.aishwarya.ethical.transparency_portal.modules.product.service.ProductService;
 import com.aishwarya.ethical.transparency_portal.modules.profile.service.ProfileService;
 import com.aishwarya.ethical.transparency_portal.security.JwtAuthenticationFilter;
@@ -68,5 +72,45 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$[0]").value("Effective"));
 
         Mockito.verify(productService).getProductReviewTags(17L);
+    }
+
+    @Test
+    void getProductById_returnsQualitiesInsightsAndInciWithoutTransparencyScore() throws Exception {
+        ProductDTO product = new ProductDTO();
+        product.setId(1L);
+        product.setProductName("Sample Product");
+        product.setDescription("A sample product description for testing.");
+        product.setImageUrl("https://example.com/product.jpg");
+        product.setBrand("Sample Brand");
+        product.setEthicalScore(85.0);
+        product.setIngredientSafety("High");
+        product.setInformationQuality("Moderate");
+        product.setEvidenceQuality("Low");
+        product.setCategory(ProductCategory.SKINCARE);
+
+        IngredientItem ingredient = new IngredientItem();
+        ingredient.setName("Aloe");
+        ingredient.setInciName("Aloe Barbadensis Leaf Juice");
+        product.setIngredients(List.of(ingredient));
+
+        ProductInsights insights = new ProductInsights();
+        insights.setInformationQualitySummary("Ingredient and manufacturer details are available.");
+        insights.setEvidenceQualitySummary("Some claims have independent references.");
+        insights.setFindings(List.of("Ingredient list available"));
+        insights.setSources(List.of("Manufacturer website"));
+        product.setProductInsights(insights);
+
+        Mockito.when(productService.getProductById(1L)).thenReturn(product);
+
+        mockMvc.perform(get("/api/v1/productsapi/1").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.ingredientSafety").value("High"))
+                .andExpect(jsonPath("$.informationQuality").value("Moderate"))
+                .andExpect(jsonPath("$.evidenceQuality").value("Low"))
+                .andExpect(jsonPath("$.productInsights.findings[0]").value("Ingredient list available"))
+                .andExpect(jsonPath("$.productInsights.sources[0]").value("Manufacturer website"))
+                .andExpect(jsonPath("$.ingredients[0].inciName").value("Aloe Barbadensis Leaf Juice"))
+                .andExpect(jsonPath("$.transparencyScore").doesNotExist())
+                .andExpect(jsonPath("$.transparencyAnalysis").doesNotExist());
     }
 }

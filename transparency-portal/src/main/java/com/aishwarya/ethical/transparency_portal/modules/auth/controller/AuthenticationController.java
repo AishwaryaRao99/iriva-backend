@@ -1,7 +1,6 @@
 package com.aishwarya.ethical.transparency_portal.modules.auth.controller;
 
 import java.time.Duration;
-import java.util.List;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -18,13 +17,10 @@ import com.aishwarya.ethical.transparency_portal.modules.auth.dto.LoginRequest;
 import com.aishwarya.ethical.transparency_portal.modules.auth.dto.RegisterRequest;
 import com.aishwarya.ethical.transparency_portal.modules.auth.dto.RegisterResponse;
 import com.aishwarya.ethical.transparency_portal.modules.auth.service.AuthenticationService;
-import com.aishwarya.ethical.transparency_portal.modules.product.model.EthicalItem;
-import com.aishwarya.ethical.transparency_portal.modules.product.model.EthicalItemEntity;
 import com.aishwarya.ethical.transparency_portal.modules.user.model.LoginResult;
 import com.aishwarya.ethical.transparency_portal.modules.user.model.UserDTO;
 import com.aishwarya.ethical.transparency_portal.modules.user.model.UserModel;
 import com.aishwarya.ethical.transparency_portal.modules.user.service.UserService;
-import com.aishwarya.ethical.transparency_portal.security.JWTUtil;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +46,6 @@ public class AuthenticationController {
 		try {
 			// Authenticate user and store user info
 			LoginResult loginResult = authenticationService.authenticate(loginRequest);
-
 			ResponseCookie cookie = ResponseCookie.from("jwt", loginResult.getJwt()).httpOnly(true).secure(false)
 					.path("/").maxAge(Duration.ofHours(1)).sameSite("Lax") // in prod it is none since we use different domains -
 					.build();														// vercel and render for each

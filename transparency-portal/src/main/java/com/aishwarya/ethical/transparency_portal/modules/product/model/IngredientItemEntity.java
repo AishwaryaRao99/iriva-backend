@@ -31,6 +31,8 @@ public class IngredientItemEntity {
 
 	private String safetyStatus;
 
+	private String inciName;
+
 	@ManyToOne
 	@JoinColumn(name = "product_id", nullable = false, foreignKey = @ForeignKey(name = "fk_ingredient_items_product"))
 	private ProductModel product;
