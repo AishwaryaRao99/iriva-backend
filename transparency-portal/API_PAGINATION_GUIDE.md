@@ -7,7 +7,7 @@ This document provides a comprehensive guide to the enhanced Product API with pa
 The Product API now supports:
 - **Pagination**: Retrieve products in pages with customizable page size
 - **Sorting**: Sort results by multiple fields in ascending or descending order
-- **Filtering**: Filter products by various criteria (scores, brand, category)
+- **Filtering**: Filter products by brand and category
 - **Advanced Search**: Complex multi-criteria filtering
 
 ---
@@ -25,8 +25,9 @@ All paginated endpoints return a `PageResponse` object with the following struct
       "description": "Product Description",
       "brand": "Brand Name",
       "category": "FOOD",
-      "ethicalScore": 85.5,
-      "transparencyScore": 90.0,
+      "ingredientSafety": "High",
+      "informationQuality": "High",
+      "evidenceQuality": "High",
       "imageUrl": "url/to/image",
       "ethicalSummary": [...],
       "ingredients": [...],
@@ -57,7 +58,7 @@ All paginated endpoints return a `PageResponse` object with the following struct
 - `page` (optional, default: 0) - Page number (0-indexed)
 - `size` (optional, default: 10) - Number of products per page (1-100)
 - `sortBy` (optional, default: "productName") - Field to sort by
-  - Available values: `productName`, `ethicalScore`, `transparencyScore`, `brand`
+  - Available values: `productName`, `brand`, `category`
 - `sortDirection` (optional, default: "ASC") - Sort direction: `ASC` or `DESC`
 
 **Examples:**
@@ -65,8 +66,8 @@ All paginated endpoints return a `PageResponse` object with the following struct
 # Get all products, page 0, 10 items per page, sorted by product name ascending
 GET http://localhost:8080/api/v1/productsapi/paginated/all
 
-# Get page 2 with 20 items per page, sorted by ethical score descending
-GET http://localhost:8080/api/v1/productsapi/paginated/all?page=2&size=20&sortBy=ethicalScore&sortDirection=DESC
+# Get page 2 with 20 items per page, sorted by product name descending
+GET http://localhost:8080/api/v1/productsapi/paginated/all?page=2&size=20&sortBy=productName&sortDirection=DESC
 
 # Get all products sorted by brand ascending
 GET http://localhost:8080/api/v1/productsapi/paginated/all?sortBy=brand&sortDirection=ASC
@@ -89,8 +90,8 @@ GET http://localhost:8080/api/v1/productsapi/paginated/all?sortBy=brand&sortDire
 # Get food products, page 0
 GET http://localhost:8080/api/v1/productsapi/paginated/by-category?category=FOOD
 
-# Get electronics sorted by ethical score descending, 15 items per page
-GET http://localhost:8080/api/v1/productsapi/paginated/by-category?category=ELECTRONICS&sortBy=ethicalScore&sortDirection=DESC&size=15
+# Get electronics sorted by brand, 15 items per page
+GET http://localhost:8080/api/v1/productsapi/paginated/by-category?category=ELECTRONICS&sortBy=brand&sortDirection=ASC&size=15
 ```
 
 ---
@@ -110,8 +111,8 @@ GET http://localhost:8080/api/v1/productsapi/paginated/by-category?category=ELEC
 # Search for products containing "organic"
 GET http://localhost:8080/api/v1/productsapi/paginated/search?name=organic
 
-# Search for "apple" products, sorted by transparency score, 20 items per page
-GET http://localhost:8080/api/v1/productsapi/paginated/search?name=apple&sortBy=transparencyScore&sortDirection=DESC&size=20
+# Search for "apple" products, sorted by product name, 20 items per page
+GET http://localhost:8080/api/v1/productsapi/paginated/search?name=apple&sortBy=productName&sortDirection=DESC&size=20
 ```
 
 ---
@@ -131,135 +132,13 @@ GET http://localhost:8080/api/v1/productsapi/paginated/search?name=apple&sortBy=
 # Search for products from "Nike" brand
 GET http://localhost:8080/api/v1/productsapi/paginated/search-brand?brand=Nike
 
-# Search for "Organic" in brand name, sorted by ethical score descending
-GET http://localhost:8080/api/v1/productsapi/paginated/search-brand?brand=Organic&sortBy=ethicalScore&sortDirection=DESC
+# Search for "Organic" in brand name, sorted by brand
+GET http://localhost:8080/api/v1/productsapi/paginated/search-brand?brand=Organic&sortBy=brand&sortDirection=ASC
 ```
 
 ---
 
-### 2. Score-Based Filtering Endpoints
-
-#### Get Products by Ethical Score Range
-**Endpoint:** `GET /api/v1/productsapi/filters/ethical-score-range`
-
-**Query Parameters:**
-- `minScore` (required) - Minimum ethical score (0-100)
-- `maxScore` (required) - Maximum ethical score (0-100)
-- `page` (optional, default: 0) - Page number
-- `size` (optional, default: 10) - Number of products per page
-
-**Examples:**
-```bash
-# Get products with ethical score between 70 and 90
-GET http://localhost:8080/api/v1/productsapi/filters/ethical-score-range?minScore=70&maxScore=90
-
-# Get highly ethical products (80-100), page 1, 20 items per page
-GET http://localhost:8080/api/v1/productsapi/filters/ethical-score-range?minScore=80&maxScore=100&page=1&size=20
-```
-
----
-
-#### Get Products by Transparency Score Range
-**Endpoint:** `GET /api/v1/productsapi/filters/transparency-score-range`
-
-**Query Parameters:**
-- `minScore` (required) - Minimum transparency score (0-100)
-- `maxScore` (required) - Maximum transparency score (0-100)
-- `page` (optional, default: 0) - Page number
-- `size` (optional, default: 10) - Number of products per page
-
-**Examples:**
-```bash
-# Get products with transparency score between 75 and 95
-GET http://localhost:8080/api/v1/productsapi/filters/transparency-score-range?minScore=75&maxScore=95
-
-# Get transparent products (85-100)
-GET http://localhost:8080/api/v1/productsapi/filters/transparency-score-range?minScore=85&maxScore=100
-```
-
----
-
-#### Get High Ethical Score Products
-**Endpoint:** `GET /api/v1/productsapi/filters/high-ethical-score`
-
-**Query Parameters:**
-- `minScore` (required) - Minimum ethical score threshold (0-100)
-- `page` (optional, default: 0) - Page number
-- `size` (optional, default: 10) - Number of products per page
-
-**Examples:**
-```bash
-# Get products with ethical score >= 75
-GET http://localhost:8080/api/v1/productsapi/filters/high-ethical-score?minScore=75
-
-# Get highly ethical products (>= 80), page 2, 15 items per page
-GET http://localhost:8080/api/v1/productsapi/filters/high-ethical-score?minScore=80&page=2&size=15
-```
-
----
-
-#### Get High Transparency Score Products
-**Endpoint:** `GET /api/v1/productsapi/filters/high-transparency-score`
-
-**Query Parameters:**
-- `minScore` (required) - Minimum transparency score threshold (0-100)
-- `page` (optional, default: 0) - Page number
-- `size` (optional, default: 10) - Number of products per page
-
-**Examples:**
-```bash
-# Get products with transparency score >= 80
-GET http://localhost:8080/api/v1/productsapi/filters/high-transparency-score?minScore=80
-
-# Get very transparent products (>= 90)
-GET http://localhost:8080/api/v1/productsapi/filters/high-transparency-score?minScore=90
-```
-
----
-
-#### Get Products by Both Score Ranges
-**Endpoint:** `GET /api/v1/productsapi/filters/score-range`
-
-**Query Parameters:**
-- `minEthicalScore` (required) - Minimum ethical score
-- `maxEthicalScore` (required) - Maximum ethical score
-- `minTransparencyScore` (required) - Minimum transparency score
-- `maxTransparencyScore` (required) - Maximum transparency score
-- `page` (optional, default: 0) - Page number
-- `size` (optional, default: 10) - Number of products per page
-
-**Examples:**
-```bash
-# Get products with both ethical and transparency scores between 70-90
-GET http://localhost:8080/api/v1/productsapi/filters/score-range?minEthicalScore=70&maxEthicalScore=90&minTransparencyScore=70&maxTransparencyScore=90
-
-# Get highly ethical and transparent products
-GET http://localhost:8080/api/v1/productsapi/filters/score-range?minEthicalScore=80&maxEthicalScore=100&minTransparencyScore=80&maxTransparencyScore=100&page=0&size=25
-```
-
----
-
-#### Get Products by Category and Ethical Score
-**Endpoint:** `GET /api/v1/productsapi/filters/category-and-ethical-score`
-
-**Query Parameters:**
-- `category` (required) - Product category
-- `minEthicalScore` (required) - Minimum ethical score threshold
-- `page` (optional, default: 0) - Page number
-- `size` (optional, default: 10) - Number of products per page
-
-**Examples:**
-```bash
-# Get ethical food products (score >= 75)
-GET http://localhost:8080/api/v1/productsapi/filters/category-and-ethical-score?category=FOOD&minEthicalScore=75
-
-# Get highly ethical clothing (score >= 85)
-GET http://localhost:8080/api/v1/productsapi/filters/category-and-ethical-score?category=CLOTHING&minEthicalScore=85&size=20
-```
-
----
-
-### 3. Advanced Search Endpoint
+### 2. Advanced Search Endpoint
 
 #### Advanced Multi-Criteria Search
 **Endpoint:** `POST /api/v1/productsapi/filters/advanced-search`
@@ -267,14 +146,10 @@ GET http://localhost:8080/api/v1/productsapi/filters/category-and-ethical-score?
 **Request Body (FilterCriteria):**
 ```json
 {
-  "minEthicalScore": 70,
-  "maxEthicalScore": 100,
-  "minTransparencyScore": 75,
-  "maxTransparencyScore": 100,
   "brand": "Organic",
   "category": "FOOD",
   "ingredientName": "gluten",
-  "sortBy": "ethicalScore",
+  "sortBy": "productName",
   "sortDirection": "DESC",
   "pageNumber": 0,
   "pageSize": 10
@@ -285,15 +160,14 @@ GET http://localhost:8080/api/v1/productsapi/filters/category-and-ethical-score?
 
 **Examples:**
 
-1. **Search for organic food products with high ethical score:**
+1. **Search for organic food products:**
 ```bash
 curl -X POST http://localhost:8080/api/v1/productsapi/filters/advanced-search \
   -H "Content-Type: application/json" \
   -d '{
     "brand": "Organic",
     "category": "FOOD",
-    "minEthicalScore": 75,
-    "sortBy": "ethicalScore",
+    "sortBy": "productName",
     "sortDirection": "DESC",
     "pageSize": 10
   }'
@@ -305,7 +179,6 @@ curl -X POST http://localhost:8080/api/v1/productsapi/filters/advanced-search \
   -H "Content-Type: application/json" \
   -d '{
     "ingredientName": "gluten-free",
-    "minEthicalScore": 70,
     "pageNumber": 0,
     "pageSize": 15
   }'
@@ -316,13 +189,9 @@ curl -X POST http://localhost:8080/api/v1/productsapi/filters/advanced-search \
 curl -X POST http://localhost:8080/api/v1/productsapi/filters/advanced-search \
   -H "Content-Type: application/json" \
   -d '{
-    "minEthicalScore": 75,
-    "maxEthicalScore": 100,
-    "minTransparencyScore": 80,
-    "maxTransparencyScore": 100,
     "brand": "Fair Trade",
     "category": "CLOTHING",
-    "sortBy": "transparencyScore",
+    "sortBy": "brand",
     "sortDirection": "DESC",
     "pageNumber": 0,
     "pageSize": 20
@@ -335,9 +204,8 @@ curl -X POST http://localhost:8080/api/v1/productsapi/filters/advanced-search \
 
 ### Available Sort Fields:
 - `productName` - Sort by product name
-- `ethicalScore` - Sort by ethical score
-- `transparencyScore` - Sort by transparency score
 - `brand` - Sort by brand name
+- `category` - Sort by category
 
 ### Sort Directions:
 - `ASC` - Ascending order (default)
@@ -348,11 +216,8 @@ curl -X POST http://localhost:8080/api/v1/productsapi/filters/advanced-search \
 # Sort by name ascending (A-Z)
 sortBy=productName&sortDirection=ASC
 
-# Sort by ethical score descending (highest first)
-sortBy=ethicalScore&sortDirection=DESC
-
-# Sort by transparency score ascending (lowest first)
-sortBy=transparencyScore&sortDirection=ASC
+# Sort by brand name ascending
+sortBy=brand&sortDirection=ASC
 ```
 
 ---
@@ -396,14 +261,10 @@ currentPage = response.currentPage
 
 | Field | Type | Description | Example |
 |-------|------|-------------|---------|
-| `minEthicalScore` | Double | Minimum ethical score (0-100) | 70.0 |
-| `maxEthicalScore` | Double | Maximum ethical score (0-100) | 95.0 |
-| `minTransparencyScore` | Double | Minimum transparency score (0-100) | 75.0 |
-| `maxTransparencyScore` | Double | Maximum transparency score (0-100) | 100.0 |
 | `brand` | String | Brand name (partial match, case-insensitive) | "Organic" |
 | `ingredientName` | String | Ingredient name (partial match) | "gluten-free" |
 | `category` | String | Product category | "FOOD" |
-| `sortBy` | String | Field to sort by | "ethicalScore" |
+| `sortBy` | String | Field to sort by | "productName" |
 | `sortDirection` | String | Sort direction (ASC/DESC) | "DESC" |
 | `pageNumber` | int | Page number (0-indexed) | 0 |
 | `pageSize` | int | Items per page (1-100) | 10 |
@@ -440,7 +301,7 @@ Server-side error
 const fetchProducts = async (page = 0, size = 10) => {
   try {
     const response = await fetch(
-      `/api/v1/productsapi/paginated/all?page=${page}&size=${size}&sortBy=ethicalScore&sortDirection=DESC`
+      `/api/v1/productsapi/paginated/all?page=${page}&size=${size}&sortBy=productName&sortDirection=ASC`
     );
     const data = await response.json();
     console.log(`Found ${data.totalElements} products`);
@@ -462,11 +323,9 @@ const advancedSearch = async (filters) => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        minEthicalScore: 75,
-        maxEthicalScore: 100,
         brand: filters.brand,
         category: filters.category,
-        sortBy: 'ethicalScore',
+        sortBy: 'productName',
         sortDirection: 'DESC',
         pageNumber: filters.page || 0,
         pageSize: filters.size || 10
@@ -493,4 +352,3 @@ const advancedSearch = async (filters) => {
 - **v1.0** - Initial release with pagination and sorting
 - **v2.0** - Added advanced filtering by scores and brand
 - **v3.0** - Added advanced multi-criteria search endpoint
-

@@ -5,8 +5,6 @@ import com.aishwarya.ethical.transparency_portal.modules.product.model.EthicalIt
 import com.aishwarya.ethical.transparency_portal.modules.product.model.IngredientItem;
 import com.aishwarya.ethical.transparency_portal.modules.product.model.ProductCategory;
 import com.aishwarya.ethical.transparency_portal.modules.product.model.ProductInsights;
-import jakarta.validation.constraints.DecimalMax;
-import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -44,11 +42,6 @@ public class ProductDTO {
     @Size(min = 2, max = 100, message = "Brand name must be between 2 and 100 characters")
     private String brand;
     
-    @NotNull(message = "Ethical score is required")
-    @DecimalMin(value = "0.0", inclusive = true, message = "Ethical score must be at least 0")
-    @DecimalMax(value = "100.0", inclusive = true, message = "Ethical score cannot exceed 100")
-    private double ethicalScore;
-
     @NotBlank(message = "Ingredient safety is required")
     @Pattern(regexp = "High|Moderate|Low", message = "Ingredient safety must be High, Moderate, or Low")
     private String ingredientSafety;

@@ -100,8 +100,9 @@ private TransparencyAnalysis convertTransparencyAnalysisEntityToDTO(Transparency
   "id": 1,
   "productName": "Burt's Bees Very Volumizing Pomegranate Shampoo",
   "brand": "Burt's Bees",
-  "ethicalScore": 9.1,
-  "transparencyScore": 9.3,
+  "ingredientSafety": "High",
+  "informationQuality": "High",
+  "evidenceQuality": "High",
   "category": "SKINCARE",
   "ethicalSummary": [
     {
@@ -185,7 +186,7 @@ curl http://localhost:8080/api/products/search?name=Coffee
 -- Products table (modified)
 products
 ├── id, productName, description, imageUrl, brand
-├── ethicalScore, transparencyScore, category
+├── ingredientSafety, informationQuality, evidenceQuality, category
 └── transparency_analysis_id (NEW FK)
 
 -- New tables

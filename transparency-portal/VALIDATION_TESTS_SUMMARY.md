@@ -76,14 +76,14 @@ Tests:
 - ✅ Null email (optional)
 - ✅ Valid email formats
 
-### 4. ProductDTO Validation Tests (21 tests)
+### 4. ProductDTO Validation Tests (11 tests)
 **File**: `modules/product/dto/ProductDTO.java`
 
 Validates:
 - `@NotBlank` on productName, description, imageUrl, brand
 - `@Size` constraints on multiple fields
-- `@NotNull` on ethicalScore, transparencyScore, category
-- `@DecimalMin(0.0)` and `@DecimalMax(100.0)` on scores
+- `@NotBlank` and `@Pattern` on ingredientSafety, informationQuality, and evidenceQuality
+- `@NotNull` on category
 
 Tests:
 - ✅ Valid product DTO
@@ -95,13 +95,8 @@ Tests:
 - ❌ Blank image URL
 - ❌ Blank brand
 - ❌ Brand too short
-- ❌ Ethical score below 0
-- ❌ Ethical score above 100
-- ✅ Ethical score at boundaries (0 and 100)
-- ❌ Transparency score below 0
-- ❌ Transparency score above 100
+- ❌ Unsupported product quality level
 - ❌ Null category
-- ❌ Invalid ethicalScore
 
 ### 5. ProductCategoryDTO Validation Tests (7 tests)
 **File**: `modules/product/dto/ProductCategoryDTO.java`

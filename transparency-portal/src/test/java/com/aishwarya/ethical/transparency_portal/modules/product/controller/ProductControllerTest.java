@@ -75,14 +75,13 @@ class ProductControllerTest {
     }
 
     @Test
-    void getProductById_returnsQualitiesInsightsAndInciWithoutTransparencyScore() throws Exception {
+    void getProductById_returnsQualitiesInsightsAndInciWithoutScores() throws Exception {
         ProductDTO product = new ProductDTO();
         product.setId(1L);
         product.setProductName("Sample Product");
         product.setDescription("A sample product description for testing.");
         product.setImageUrl("https://example.com/product.jpg");
         product.setBrand("Sample Brand");
-        product.setEthicalScore(85.0);
         product.setIngredientSafety("High");
         product.setInformationQuality("Moderate");
         product.setEvidenceQuality("Low");
@@ -110,6 +109,7 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.productInsights.findings[0]").value("Ingredient list available"))
                 .andExpect(jsonPath("$.productInsights.sources[0]").value("Manufacturer website"))
                 .andExpect(jsonPath("$.ingredients[0].inciName").value("Aloe Barbadensis Leaf Juice"))
+                .andExpect(jsonPath("$.ethicalScore").doesNotExist())
                 .andExpect(jsonPath("$.transparencyScore").doesNotExist())
                 .andExpect(jsonPath("$.transparencyAnalysis").doesNotExist());
     }

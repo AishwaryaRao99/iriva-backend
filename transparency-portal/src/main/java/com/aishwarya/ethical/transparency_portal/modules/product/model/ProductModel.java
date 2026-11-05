@@ -39,10 +39,6 @@ public class ProductModel {
 
 	private String brand;
 
-	private double ethicalScore;
-
-	private double transparencyScore;
-
 	private String ingredientSafety;
 
 	private String informationQuality;
