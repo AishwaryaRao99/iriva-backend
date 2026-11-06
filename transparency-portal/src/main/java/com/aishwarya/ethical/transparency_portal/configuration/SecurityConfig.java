@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -21,6 +22,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import com.aishwarya.ethical.transparency_portal.security.JwtAuthenticationEntryPoint;
 import com.aishwarya.ethical.transparency_portal.security.JwtAuthenticationFilter;
 import com.aishwarya.ethical.transparency_portal.security.OAuth2SuccessHandler;
+import com.aishwarya.ethical.transparency_portal.security.SpaCsrfTokenRequestHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -44,13 +46,18 @@ public class SecurityConfig {
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-		http.csrf(csrf -> csrf.disable()) // Disabled for stateless REST API
+		http.csrf(csrf -> csrf.csrfTokenRepository(
+		        CookieCsrfTokenRepository.withHttpOnlyFalse())
+				.csrfTokenRequestHandler(
+				        new SpaCsrfTokenRequestHandler())
+				        .ignoringRequestMatchers("/h2-console/**")
+				    ) // Disabled for stateless REST API --previous version
 				.cors(Customizer.withDefaults())
 				.authorizeHttpRequests(auth -> auth
 						// ========== PUBLIC ENDPOINTS (No authentication required) ==========
 
 						// Authentication endpoints - Allow unauthenticated login
-						.requestMatchers("/auth/**").permitAll()
+						.requestMatchers("/auth/**","/csrf").permitAll()
 
 						// Product API endpoints - Allow public product browsing
 						.requestMatchers("/api/v1/productsapi/**").permitAll()
@@ -137,4 +144,6 @@ public class SecurityConfig {
 
 	    return source;
 	}
+	
+
 }
