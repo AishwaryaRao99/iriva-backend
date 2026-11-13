@@ -45,9 +45,13 @@ public class SecurityConfig {
 
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		
+		CookieCsrfTokenRepository csrfRepository =
+		        CookieCsrfTokenRepository.withHttpOnlyFalse();
 
-		http.csrf(csrf -> csrf.csrfTokenRepository(
-		        CookieCsrfTokenRepository.withHttpOnlyFalse())
+		csrfRepository.setCookiePath("/");
+
+		http.csrf(csrf -> csrf.csrfTokenRepository(csrfRepository)
 				.csrfTokenRequestHandler(
 				        new SpaCsrfTokenRequestHandler())
 				        .ignoringRequestMatchers("/h2-console/**")
@@ -130,7 +134,7 @@ public class SecurityConfig {
 	            List.of("http://localhost:5173"));
 
 	    configuration.setAllowedMethods(
-	            List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+	            List.of("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"));
 
 	    configuration.setAllowedHeaders(
 	            List.of("*"));
