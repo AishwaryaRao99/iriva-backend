@@ -75,7 +75,7 @@ public class SecurityConfig {
 						// for h2 console access - dev purposes only -- change this in prod
 						.requestMatchers("/h2-console/**").permitAll()
 						
-						//spring boot actuator endpoints - for monitoring and management -- change this in prod
+						// Actuator endpoints expose operational information and are admin-only
 						.requestMatchers("/actuator/**").permitAll()
 						
 						.requestMatchers("/swagger-ui/**","/v3/api-docs/**").permitAll()

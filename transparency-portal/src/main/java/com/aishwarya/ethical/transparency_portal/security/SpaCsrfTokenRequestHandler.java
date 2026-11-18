@@ -49,19 +49,6 @@ public class SpaCsrfTokenRequestHandler implements CsrfTokenRequestHandler {
 	    String headerValue =
 	            request.getHeader(csrfToken.getHeaderName());
 
-	    String cookieValue = null;
-
-	    Cookie[] cookies = request.getCookies();
-
-	    if (cookies != null) {
-	        for (Cookie cookie : cookies) {
-	            if ("XSRF-TOKEN".equals(cookie.getName())) {
-	                cookieValue = cookie.getValue();
-	                break;
-	            }
-	        }
-	    }
-
 	    if (StringUtils.hasText(headerValue)) {
 	        return this.plain.resolveCsrfTokenValue(
 	                request, csrfToken);

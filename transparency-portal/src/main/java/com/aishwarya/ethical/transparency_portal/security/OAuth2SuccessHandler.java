@@ -29,15 +29,13 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 	private final OAuth2UserService oAuth2UserService;
 	private final JWTUtil jwtUtil;
-	private final ObjectMapper objectMapper;
 
 	@Value("${oauth2.redirect-url:http://localhost:5173}")
 	private String redirectUrl;
 
-	public OAuth2SuccessHandler(OAuth2UserService oAuth2UserService, JWTUtil jwtUtil, ObjectMapper objectMapper) {
+	public OAuth2SuccessHandler(OAuth2UserService oAuth2UserService, JWTUtil jwtUtil) {
 		this.oAuth2UserService = oAuth2UserService;
 		this.jwtUtil = jwtUtil;
-		this.objectMapper = objectMapper;
 	}
 
 	@Override
