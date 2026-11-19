@@ -23,6 +23,7 @@ import com.aishwarya.ethical.transparency_portal.security.JwtAuthenticationEntry
 import com.aishwarya.ethical.transparency_portal.security.JwtAuthenticationFilter;
 import com.aishwarya.ethical.transparency_portal.security.OAuth2SuccessHandler;
 import com.aishwarya.ethical.transparency_portal.security.SpaCsrfTokenRequestHandler;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 
 @Configuration
 @EnableWebSecurity
@@ -58,8 +59,13 @@ public class SecurityConfig {
 				    ) // Disabled for stateless REST API --previous version
 				.cors(Customizer.withDefaults())
 				.authorizeHttpRequests(auth -> auth
+						
+						.requestMatchers(EndpointRequest.toAnyEndpoint()).hasRole("ADMIN")
+				        
+				        .requestMatchers("/monitoring","/monitoring/**").hasRole("ADMIN")
+				        
 						// ========== PUBLIC ENDPOINTS (No authentication required) ==========
-
+						
 						// Authentication endpoints - Allow unauthenticated login
 						.requestMatchers("/auth/**","/csrf").permitAll()
 
@@ -74,10 +80,7 @@ public class SecurityConfig {
 
 						// for h2 console access - dev purposes only -- change this in prod
 						.requestMatchers("/h2-console/**").permitAll()
-						
-						// Actuator endpoints expose operational information and are admin-only
-						.requestMatchers("/actuator/**").permitAll()
-						
+										
 						.requestMatchers("/swagger-ui/**","/v3/api-docs/**").permitAll()
 						
 						//for static images
