@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -22,6 +23,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import com.aishwarya.ethical.transparency_portal.security.JwtAuthenticationEntryPoint;
 import com.aishwarya.ethical.transparency_portal.security.JwtAuthenticationFilter;
 import com.aishwarya.ethical.transparency_portal.security.OAuth2SuccessHandler;
+import com.aishwarya.ethical.transparency_portal.security.SpaCsrfTokenRequestHandler;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 
 @Configuration
 @EnableWebSecurity
@@ -44,18 +47,28 @@ public class SecurityConfig {
 
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		
+		CookieCsrfTokenRepository csrfRepository =
+		        CookieCsrfTokenRepository.withHttpOnlyFalse();
 
-		http.csrf(csrf -> csrf.disable()) //revisit when we have a frontend that can handle CSRF tokens
+		csrfRepository.setCookiePath("/");
+
+		http.csrf(csrf -> csrf.csrfTokenRepository(csrfRepository)
+				.csrfTokenRequestHandler(
+				        new SpaCsrfTokenRequestHandler())
+				        .ignoringRequestMatchers("/h2-console/**")
+				    ) // Disabled for stateless REST API --previous version
 				.cors(Customizer.withDefaults())
 				.authorizeHttpRequests(auth -> auth
 						
-						.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+						.requestMatchers(EndpointRequest.toAnyEndpoint()).hasRole("ADMIN")
+				        
+				        .requestMatchers("/monitoring","/monitoring/**").hasRole("ADMIN")
+				        
 						// ========== PUBLIC ENDPOINTS (No authentication required) ==========
-
-						// Authentication endpoints - Allow unauthenticated login
-						.requestMatchers("/auth/**").permitAll()
 						
-						.requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
+						// Authentication endpoints - Allow unauthenticated login
+						.requestMatchers("/auth/**","/csrf").permitAll()
 
 						// Product API endpoints - Allow public product browsing
 						.requestMatchers("/api/v1/productsapi/**").permitAll()
@@ -67,7 +80,9 @@ public class SecurityConfig {
 						.requestMatchers("/api/test/**").permitAll()
 
 						// for h2 console access - dev purposes only -- change this in prod
-						//.requestMatchers("/h2-console/**").permitAll()
+						.requestMatchers("/h2-console/**").permitAll()
+										
+						.requestMatchers("/swagger-ui/**","/v3/api-docs/**").permitAll()
 						
 						//for static images
 						.requestMatchers("/images/products/**").permitAll()
@@ -123,8 +138,8 @@ public class SecurityConfig {
 	            List.of("https://iriva-frontend.vercel.app"));
 
 	    configuration.setAllowedMethods(
-	            List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-	    
+	            List.of("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"));
+
 	    configuration.setAllowedHeaders(
 	            List.of("Authorization", "Content-Type", "Accept", "Origin"));
 
@@ -137,4 +152,6 @@ public class SecurityConfig {
 
 	    return source;
 	}
+	
+
 }

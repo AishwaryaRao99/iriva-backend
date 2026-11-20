@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -30,15 +29,13 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 	private final OAuth2UserService oAuth2UserService;
 	private final JWTUtil jwtUtil;
-	private final ObjectMapper objectMapper;
 
 	@Value("${oauth2.redirect-url:https://iriva-frontend.vercel.app}")
 	private String redirectUrl;
 
-	public OAuth2SuccessHandler(OAuth2UserService oAuth2UserService, JWTUtil jwtUtil, ObjectMapper objectMapper) {
+	public OAuth2SuccessHandler(OAuth2UserService oAuth2UserService, JWTUtil jwtUtil) {
 		this.oAuth2UserService = oAuth2UserService;
 		this.jwtUtil = jwtUtil;
-		this.objectMapper = objectMapper;
 	}
 
 	@Override
@@ -63,6 +60,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 				String jwt = jwtUtil.generateToken(email, roles);
 
 				// Set JWT as HTTP-only cookie with secure settings
+				
+				@SuppressWarnings("null")
 				ResponseCookie cookie = ResponseCookie.from("jwt", jwt)
 						.httpOnly(true)
 						.secure(true) // Set to true in production with HTTPS
@@ -94,5 +93,4 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 		}
 		return Collections.singletonList("ROLE_USER");
 	}
-
 }

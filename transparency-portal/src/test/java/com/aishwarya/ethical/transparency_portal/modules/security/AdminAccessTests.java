@@ -55,4 +55,25 @@ class AdminAccessTests {
 	    mockMvc.perform(get("/admin/test"))
 	            .andExpect(status().isUnauthorized());
 	}
+
+	@Test
+	void actuatorRequiresAdminRoleAndHealthRemainsAvailable() throws Exception {
+		String userToken = jwtUtil.generateToken("user", List.of("ROLE_USER"));
+		Cookie userJwtCookie = new Cookie("jwt", userToken);
+		mockMvc.perform(get("/actuator/health").cookie(userJwtCookie))
+				.andExpect(status().isForbidden());
+
+		String adminToken = jwtUtil.generateToken("admin", List.of("ROLE_ADMIN"));
+		Cookie adminJwtCookie = new Cookie("jwt", adminToken);
+		mockMvc.perform(get("/actuator/health").cookie(adminJwtCookie))
+				.andExpect(status().isOk());
+		mockMvc.perform(get("/actuator/prometheus").cookie(adminJwtCookie))
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	void actuatorRejectsAnonymousRequests() throws Exception {
+		mockMvc.perform(get("/actuator/health"))
+				.andExpect(status().isUnauthorized());
+	}
 }

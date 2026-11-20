@@ -1,7 +1,5 @@
 package com.aishwarya.ethical.transparency_portal.modules.product.model;
 
-import java.util.List;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;

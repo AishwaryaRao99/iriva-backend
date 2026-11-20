@@ -9,4 +9,5 @@ public class IngredientItem {
 	private String name;
 	private String description;
 	private String safetyStatus;
+	private String inciName;
 }

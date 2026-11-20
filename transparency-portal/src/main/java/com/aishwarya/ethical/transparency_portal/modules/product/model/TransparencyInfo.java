@@ -8,7 +8,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TransparencyInfo {
-    private String transparencyScore;
     private String transparencyInitiatives;
     private String transparencyReporting;
     private String transparencyPartnerships;

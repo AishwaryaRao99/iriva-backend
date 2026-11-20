@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.aishwarya.ethical.transparency_portal.exception_handling.ProductNotFoundException;
@@ -19,10 +20,9 @@ import com.aishwarya.ethical.transparency_portal.modules.product.model.EthicalIt
 import com.aishwarya.ethical.transparency_portal.modules.product.model.IngredientItem;
 import com.aishwarya.ethical.transparency_portal.modules.product.model.IngredientItemEntity;
 import com.aishwarya.ethical.transparency_portal.modules.product.model.ProductCategory;
+import com.aishwarya.ethical.transparency_portal.modules.product.model.ProductInsights;
+import com.aishwarya.ethical.transparency_portal.modules.product.model.ProductInsightsEntity;
 import com.aishwarya.ethical.transparency_portal.modules.product.model.ProductModel;
-import com.aishwarya.ethical.transparency_portal.modules.product.model.ScoreBreakdown;
-import com.aishwarya.ethical.transparency_portal.modules.product.model.TransparencyAnalysis;
-import com.aishwarya.ethical.transparency_portal.modules.product.model.TransparencyAnalysisEntity;
 import com.aishwarya.ethical.transparency_portal.modules.product.repository.ProductRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -87,12 +87,13 @@ public class ProductService {
 				model.getDescription(),
 				model.getImageUrl(),
 				model.getBrand(),
-				model.getEthicalScore(),
-				model.getTransparencyScore(),
+				model.getIngredientSafety(),
+				model.getInformationQuality(),
+				model.getEvidenceQuality(),
 				model.getCategory(),
 				convertEthicalItemsEntityToDTO(model.getEthicalSummary()),
 				convertIngredientsEntityToDTO(model.getIngredients()),
-				convertTransparencyAnalysisEntityToDTO(model.getTransparencyAnalysis())
+				convertProductInsightsEntityToDTO(model.getProductInsights())
 		);
 	}
 	
@@ -124,52 +125,36 @@ public class ProductService {
 			item.setName(entity.getName());
 			item.setDescription(entity.getDescription());
 			item.setSafetyStatus(entity.getSafetyStatus());
+			item.setInciName(entity.getInciName());
 			return item;
 		}).toList();
 	}
 	
-	/**
-	 * Converts TransparencyAnalysisEntity to TransparencyAnalysis (DTO format).
-	 */
-	private TransparencyAnalysis convertTransparencyAnalysisEntityToDTO(TransparencyAnalysisEntity entity) {
+	private ProductInsights convertProductInsightsEntityToDTO(ProductInsightsEntity entity) {
 		if (entity == null) {
 			return null;
 		}
-		TransparencyAnalysis analysis = new TransparencyAnalysis();
-		
-		// Parse JSON strings back to lists
+		ProductInsights insights = new ProductInsights();
+		insights.setInformationQualitySummary(entity.getInformationQualitySummary());
+		insights.setEvidenceQualitySummary(entity.getEvidenceQualitySummary());
 		try {
-			if (entity.getScoreHighReasonsJson() != null) {
-				List<String> reasons = objectMapper.readValue(
-					entity.getScoreHighReasonsJson(),
+			if (entity.getFindingsJson() != null) {
+				insights.setFindings(objectMapper.readValue(
+					entity.getFindingsJson(),
 					objectMapper.getTypeFactory().constructCollectionType(List.class, String.class)
-				);
-				analysis.setScoreHighReasons(reasons);
+				));
 			}
-			if (entity.getImprovementAreasJson() != null) {
-				List<String> areas = objectMapper.readValue(
-					entity.getImprovementAreasJson(),
+			if (entity.getSourcesJson() != null) {
+				insights.setSources(objectMapper.readValue(
+					entity.getSourcesJson(),
 					objectMapper.getTypeFactory().constructCollectionType(List.class, String.class)
-				);
-				analysis.setImprovementAreas(areas);
+				));
 			}
 		} catch (Exception e) {
-			// If parsing fails, set empty lists
-			analysis.setScoreHighReasons(new java.util.ArrayList<>());
-			analysis.setImprovementAreas(new java.util.ArrayList<>());
+			insights.setFindings(new java.util.ArrayList<>());
+			insights.setSources(new java.util.ArrayList<>());
 		}
-		
-		// Convert ScoreBreakdownEntity to ScoreBreakdown
-		if (entity.getScoreBreakdown() != null) {
-			ScoreBreakdown breakdown = new ScoreBreakdown();
-			breakdown.setIngredientTransparency(entity.getScoreBreakdown().getIngredientTransparency());
-			breakdown.setEthicalCertifications(entity.getScoreBreakdown().getEthicalCertifications());
-			breakdown.setManufacturingInfo(entity.getScoreBreakdown().getManufacturingInfo());
-			breakdown.setSourcingTransparency(entity.getScoreBreakdown().getSourcingTransparency());
-			analysis.setScoreBreakdown(breakdown);
-		}
-		
-		return analysis;
+		return insights;
 	}
 
 
@@ -240,7 +225,7 @@ public class ProductService {
 	 * 
 	 * @param pageNumber Page number (0-indexed)
 	 * @param pageSize Number of products per page
-	 * @param sortBy Field to sort by (productName, ethicalScore, transparencyScore)
+	 * @param sortBy Field to sort by (productName, brand, category)
 	 * @param sortDirection Sort direction (ASC or DESC)
 	 * @return PageResponse of ProductDTO
 	 */
@@ -268,7 +253,7 @@ public class ProductService {
 	 * Get products by category with pagination and sorting.
 	 * 
 	 */
-	public PageResponse<ProductDTO> getProductsByCategoryPaginated(String category, int pageNumber, int pageSize, String sortBy, String sortDirection) {
+	public PageResponse<ProductDTO> getProductsByCategoryPaginated(String category, int pageNumber, int pageSize, String sortBy, @NonNull String sortDirection) {
 		if (category == null || category.trim().isEmpty()) {
 			throw new IllegalArgumentException("Category must not be empty.");
 		}
@@ -302,7 +287,7 @@ public class ProductService {
 	/**
 	 * Search products by name with pagination and sorting.
 	 */
-	public PageResponse<ProductDTO> searchProductsByNamePaginated(String name, int pageNumber, int pageSize, String sortBy, String sortDirection) {
+	public PageResponse<ProductDTO> searchProductsByNamePaginated(String name, int pageNumber, int pageSize, String sortBy, @NonNull String sortDirection) {
 		if (name == null || name.trim().isEmpty()) {
 			throw new IllegalArgumentException("Product name must not be empty.");
 		}
@@ -326,116 +311,12 @@ public class ProductService {
 		return searchProductsByNamePaginated(name, pageNumber, pageSize, "productName", "ASC");
 	}
 
-	// ==================== FILTER BY SCORES ====================
-
-	/**
-	 * Get products filtered by ethical score range with pagination.
-	 */
-	public PageResponse<ProductDTO> getProductsByEthicalScoreRange(Double minScore, Double maxScore, int pageNumber, int pageSize) {
-		if (minScore == null || maxScore == null || minScore < 0 || maxScore > 100 || minScore > maxScore) {
-			throw new IllegalArgumentException("Invalid score range. Min and Max must be between 0-100 and Min <= Max.");
-		}
-		validatePaginationParams(pageNumber, pageSize);
-		
-		Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "ethicalScore"));
-		Page<ProductModel> page = productRepository.findByEthicalScoreRange(minScore, maxScore, pageable);
-		
-		if (page.isEmpty()) {
-			throw new ProductNotFoundException("No products found with ethical score between " + minScore + " and " + maxScore);
-		}
-		
-		return convertPageToResponse(page, "ethicalScore", "DESC");
-	}
-
-	/**
-	 * Get products filtered by transparency score range with pagination.
-	 */
-	public PageResponse<ProductDTO> getProductsByTransparencyScoreRange(Double minScore, Double maxScore, int pageNumber, int pageSize) {
-		if (minScore == null || maxScore == null || minScore < 0 || maxScore > 100 || minScore > maxScore) {
-			throw new IllegalArgumentException("Invalid score range. Min and Max must be between 0-100 and Min <= Max.");
-		}
-		validatePaginationParams(pageNumber, pageSize);
-		
-		Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "transparencyScore"));
-		Page<ProductModel> page = productRepository.findByTransparencyScoreRange(minScore, maxScore, pageable);
-		
-		if (page.isEmpty()) {
-			throw new ProductNotFoundException("No products found with transparency score between " + minScore + " and " + maxScore);
-		}
-		
-		return convertPageToResponse(page, "transparencyScore", "DESC");
-	}
-
-	/**
-	 * Get products with high ethical score (above threshold).
-	 */
-	public PageResponse<ProductDTO> getHighEthicalScoreProducts(Double minScore, int pageNumber, int pageSize) {
-		if (minScore == null || minScore < 0 || minScore > 100) {
-			throw new IllegalArgumentException("Score must be between 0-100.");
-		}
-		validatePaginationParams(pageNumber, pageSize);
-		
-		Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "ethicalScore"));
-		Page<ProductModel> page = productRepository.findByEthicalScoreGreaterThanEqual(minScore, pageable);
-		
-		if (page.isEmpty()) {
-			throw new ProductNotFoundException("No products found with ethical score >= " + minScore);
-		}
-		
-		return convertPageToResponse(page, "ethicalScore", "DESC");
-	}
-
-	/**
-	 * Get products with high transparency score (above threshold).
-	 */
-	public PageResponse<ProductDTO> getHighTransparencyScoreProducts(Double minScore, int pageNumber, int pageSize) {
-		if (minScore == null || minScore < 0 || minScore > 100) {
-			throw new IllegalArgumentException("Score must be between 0-100.");
-		}
-		validatePaginationParams(pageNumber, pageSize);
-		
-		Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "transparencyScore"));
-		Page<ProductModel> page = productRepository.findByTransparencyScoreGreaterThanEqual(minScore, pageable);
-		
-		if (page.isEmpty()) {
-			throw new ProductNotFoundException("No products found with transparency score >= " + minScore);
-		}
-		
-		return convertPageToResponse(page, "transparencyScore", "DESC");
-	}
-
-	/**
-	 * Get products filtered by both ethical and transparency score ranges.
-	 */
-	public PageResponse<ProductDTO> getProductsByScoreRange(Double minEthicalScore, Double maxEthicalScore, 
-															Double minTransparencyScore, Double maxTransparencyScore,
-															int pageNumber, int pageSize) {
-		if (minEthicalScore == null || maxEthicalScore == null || minTransparencyScore == null || maxTransparencyScore == null) {
-			throw new IllegalArgumentException("All score parameters must not be null.");
-		}
-		if (minEthicalScore < 0 || maxEthicalScore > 100 || minEthicalScore > maxEthicalScore ||
-			minTransparencyScore < 0 || maxTransparencyScore > 100 || minTransparencyScore > maxTransparencyScore) {
-			throw new IllegalArgumentException("Invalid score ranges.");
-		}
-		validatePaginationParams(pageNumber, pageSize);
-		
-		Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "ethicalScore"));
-		Page<ProductModel> page = productRepository.findByScoreRange(minEthicalScore, maxEthicalScore, 
-																	  minTransparencyScore, maxTransparencyScore, pageable);
-		
-		if (page.isEmpty()) {
-			throw new ProductNotFoundException("No products found matching the score criteria.");
-		}
-		
-		return convertPageToResponse(page, "ethicalScore", "DESC");
-	}
-
 	// ==================== FILTER BY BRAND ====================
 
 	/**
 	 * Search products by brand with pagination and sorting.
 	 */
-	public PageResponse<ProductDTO> searchProductsByBrand(String brand, int pageNumber, int pageSize, String sortBy, String sortDirection) {
+	public PageResponse<ProductDTO> searchProductsByBrand(String brand, int pageNumber, int pageSize, String sortBy, @NonNull String sortDirection) {
 		if (brand == null || brand.trim().isEmpty()) {
 			throw new IllegalArgumentException("Brand name must not be empty.");
 		}
@@ -480,35 +361,6 @@ public class ProductService {
 		return convertPageToResponse(page, sortField, direction.toString());
 	}
 
-	/**
-	 * Get products by category and minimum ethical score.
-	 */
-	public PageResponse<ProductDTO> getProductsByCategoryAndEthicalScore(String category, Double minEthicalScore, int pageNumber, int pageSize) {
-		if (category == null || category.trim().isEmpty()) {
-			throw new IllegalArgumentException("Category must not be empty.");
-		}
-		if (minEthicalScore == null || minEthicalScore < 0 || minEthicalScore > 100) {
-			throw new IllegalArgumentException("Ethical score must be between 0-100.");
-		}
-		validatePaginationParams(pageNumber, pageSize);
-		
-		ProductCategory cat;
-		try {
-			cat = ProductCategory.valueOf(category.trim().toUpperCase());
-		} catch (IllegalArgumentException e) {
-			throw new ProductNotFoundException("Invalid category: " + category);
-		}
-		
-		Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "ethicalScore"));
-		Page<ProductModel> page = productRepository.findByCategoryAndEthicalScoreAbove(cat, minEthicalScore, pageable);
-		
-		if (page.isEmpty()) {
-			throw new ProductNotFoundException("No products found for category: " + category + " with ethical score >= " + minEthicalScore);
-		}
-		
-		return convertPageToResponse(page, "ethicalScore", "DESC");
-	}
-
 	// ==================== HELPER METHODS ====================
 
 	/**
@@ -526,15 +378,17 @@ public class ProductService {
 	/**
 	 * Parses sort direction string to Sort.Direction enum.
 	 */
-	private Sort.Direction parseSortDirection(String direction) {
-		if (direction == null || direction.trim().isEmpty()) {
+	private Sort.Direction parseSortDirection(@NonNull String direction) {
+		if (direction.trim().isEmpty()) {
 			return Sort.Direction.ASC;
 		}
-		try {
-			return Sort.Direction.fromString(direction.toUpperCase());
-		} catch (IllegalArgumentException e) {
-			throw new IllegalArgumentException("Invalid sort direction. Use ASC or DESC.");
-		}
+		else {
+			try {
+				return Sort.Direction.fromString(direction.toUpperCase());
+			} catch (IllegalArgumentException e) {
+				throw new IllegalArgumentException("Invalid sort direction. Use ASC or DESC.");
+			}
+		}		
 	}
 
 	/**
@@ -551,10 +405,6 @@ public class ProductService {
 				return "name";
 			case "productname":
 				return "productName";
-			case "ethicalscore":
-				return "ethicalScore";
-			case "transparencyscore":
-				return "transparencyScore";
 			case "brand":
 				return "brand";
 			case "category":
@@ -598,14 +448,6 @@ public class ProductService {
 		// Alternatively, custom @Query methods can be created for specific filter combinations
 		
 		// For now, applying basic filters through existing repository methods
-		if (criteria.getMinEthicalScore() != null && criteria.getMaxEthicalScore() != null) {
-			page = productRepository.findByEthicalScoreRange(
-				criteria.getMinEthicalScore(),
-				criteria.getMaxEthicalScore(),
-				pageable
-			);
-		}
-		
 		if (criteria.getBrand() != null && !criteria.getBrand().isEmpty()) {
 			page = productRepository.findByBrandContainingIgnoreCase(criteria.getBrand(), pageable);
 		}

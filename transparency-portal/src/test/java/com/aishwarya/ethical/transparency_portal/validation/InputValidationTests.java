@@ -610,6 +610,9 @@ class InputValidationTests {
         @BeforeEach
         void setUp() {
             productDTO = new ProductDTO();
+            productDTO.setIngredientSafety("High");
+            productDTO.setInformationQuality("High");
+            productDTO.setEvidenceQuality("High");
         }
 
         @Test
@@ -620,8 +623,6 @@ class InputValidationTests {
             productDTO.setDescription("High-quality organic coffee beans sourced from fair trade farms");
             productDTO.setImageUrl("https://example.com/coffee.jpg");
             productDTO.setBrand("EthicalBrew");
-            productDTO.setEthicalScore(85.5);
-            productDTO.setTransparencyScore(90.0);
             productDTO.setCategory(ProductCategory.FOOD);
 
             // Act
@@ -640,8 +641,6 @@ class InputValidationTests {
             productDTO.setDescription("High-quality product description here");
             productDTO.setImageUrl("https://example.com/image.jpg");
             productDTO.setBrand("Brand");
-            productDTO.setEthicalScore(85.0);
-            productDTO.setTransparencyScore(90.0);
 
             // Act
             Set<ConstraintViolation<ProductDTO>> violations = validator.validate(productDTO);
@@ -663,8 +662,6 @@ class InputValidationTests {
             productDTO.setDescription("High-quality product description here");
             productDTO.setImageUrl("https://example.com/image.jpg");
             productDTO.setBrand("Brand");
-            productDTO.setEthicalScore(85.0);
-            productDTO.setTransparencyScore(90.0);
 
             // Act
             Set<ConstraintViolation<ProductDTO>> violations = validator.validate(productDTO);
@@ -686,8 +683,6 @@ class InputValidationTests {
             productDTO.setDescription("High-quality product description here");
             productDTO.setImageUrl("https://example.com/image.jpg");
             productDTO.setBrand("Brand");
-            productDTO.setEthicalScore(85.0);
-            productDTO.setTransparencyScore(90.0);
 
             // Act
             Set<ConstraintViolation<ProductDTO>> violations = validator.validate(productDTO);
@@ -704,8 +699,6 @@ class InputValidationTests {
             productDTO.setDescription("Short");
             productDTO.setImageUrl("https://example.com/image.jpg");
             productDTO.setBrand("Brand");
-            productDTO.setEthicalScore(85.0);
-            productDTO.setTransparencyScore(90.0);
 
             // Act
             Set<ConstraintViolation<ProductDTO>> violations = validator.validate(productDTO);
@@ -727,8 +720,6 @@ class InputValidationTests {
             productDTO.setDescription("A".repeat(2001));
             productDTO.setImageUrl("https://example.com/image.jpg");
             productDTO.setBrand("Brand");
-            productDTO.setEthicalScore(85.0);
-            productDTO.setTransparencyScore(90.0);
 
             // Act
             Set<ConstraintViolation<ProductDTO>> violations = validator.validate(productDTO);
@@ -745,8 +736,6 @@ class InputValidationTests {
             productDTO.setDescription("High-quality product description here");
             productDTO.setImageUrl("   ");
             productDTO.setBrand("Brand");
-            productDTO.setEthicalScore(85.0);
-            productDTO.setTransparencyScore(90.0);
 
             // Act
             Set<ConstraintViolation<ProductDTO>> violations = validator.validate(productDTO);
@@ -768,8 +757,6 @@ class InputValidationTests {
             productDTO.setDescription("High-quality product description here");
             productDTO.setImageUrl("https://example.com/image.jpg");
             productDTO.setBrand("   ");
-            productDTO.setEthicalScore(85.0);
-            productDTO.setTransparencyScore(90.0);
 
             // Act
             Set<ConstraintViolation<ProductDTO>> violations = validator.validate(productDTO);
@@ -791,8 +778,6 @@ class InputValidationTests {
             productDTO.setDescription("High-quality product description here");
             productDTO.setImageUrl("https://example.com/image.jpg");
             productDTO.setBrand("A");
-            productDTO.setEthicalScore(85.0);
-            productDTO.setTransparencyScore(90.0);
 
             // Act
             Set<ConstraintViolation<ProductDTO>> violations = validator.validate(productDTO);
@@ -801,134 +786,22 @@ class InputValidationTests {
             assertFalse(violations.isEmpty(), "Short brand should have violations");
         }
 
+
         @Test
-        @DisplayName("Should reject ethical score below 0.0")
-        void testEthicalScoreTooLow() {
-            // Arrange
+        @DisplayName("Should reject unsupported product quality levels")
+        void testUnsupportedQualityLevel() {
             productDTO.setProductName("Coffee");
             productDTO.setDescription("High-quality product description here");
             productDTO.setImageUrl("https://example.com/image.jpg");
             productDTO.setBrand("Brand");
-            productDTO.setEthicalScore(-0.1);
-            productDTO.setTransparencyScore(90.0);
+            productDTO.setIngredientSafety("Excellent");
 
-            // Act
             Set<ConstraintViolation<ProductDTO>> violations = validator.validate(productDTO);
 
-            // Assert
-            assertFalse(violations.isEmpty(), "Ethical score below 0 should have violations");
-            assertTrue(
-                    violations.stream()
-                            .anyMatch(v -> v.getMessage().contains("at least 0")),
-                    "Should contain ethical score minimum constraint message"
-            );
+            assertTrue(violations.stream().anyMatch(
+                violation -> violation.getPropertyPath().toString().equals("ingredientSafety")));
         }
 
-        @Test
-        @DisplayName("Should reject ethical score above 100.0")
-        void testEthicalScoreTooHigh() {
-            // Arrange
-            productDTO.setProductName("Coffee");
-            productDTO.setDescription("High-quality product description here");
-            productDTO.setImageUrl("https://example.com/image.jpg");
-            productDTO.setBrand("Brand");
-            productDTO.setEthicalScore(100.1);
-            productDTO.setTransparencyScore(90.0);
-
-            // Act
-            Set<ConstraintViolation<ProductDTO>> violations = validator.validate(productDTO);
-
-            // Assert
-            assertFalse(violations.isEmpty(), "Ethical score above 100 should have violations");
-            assertTrue(
-                    violations.stream()
-                            .anyMatch(v -> v.getMessage().contains("cannot exceed 100")),
-                    "Should contain ethical score maximum constraint message"
-            );
-        }
-
-        @Test
-        @DisplayName("Should accept ethical score at boundaries (0 and 100)")
-        void testEthicalScoreBoundaries() {
-            // Arrange
-            productDTO.setProductName("Coffee");
-            productDTO.setDescription("High-quality product description here");
-            productDTO.setImageUrl("https://example.com/image.jpg");
-            productDTO.setBrand("Brand");
-
-            // Test boundary value 0
-            productDTO.setEthicalScore(0.0);
-            productDTO.setTransparencyScore(90.0);
-            productDTO.setCategory(ProductCategory.FOOD);
-            Set<ConstraintViolation<ProductDTO>> violations = validator.validate(productDTO);        
-            
-            assertTrue(violations.isEmpty(), "Ethical score 0 should be valid");                    
-
-            // Test boundary value 100
-            productDTO.setEthicalScore(100.0);
-            violations = validator.validate(productDTO);         
-            assertTrue(violations.isEmpty(), "Ethical score 100 should be valid");
-                   
-        }
-
-        @Test
-        @DisplayName("Should reject transparency score below 0.0")
-        void testTransparencyScoreTooLow() {
-            // Arrange
-            productDTO.setProductName("Coffee");
-            productDTO.setDescription("High-quality product description here");
-            productDTO.setImageUrl("https://example.com/image.jpg");
-            productDTO.setBrand("Brand");
-            productDTO.setEthicalScore(85.0);
-            productDTO.setTransparencyScore(-0.1);
-
-            // Act
-            Set<ConstraintViolation<ProductDTO>> violations = validator.validate(productDTO);
-
-            // Assert
-            assertFalse(violations.isEmpty(), "Transparency score below 0 should have violations");
-            assertTrue(
-                    violations.stream()
-                            .anyMatch(v -> v.getMessage().contains("at least 0")),
-                    "Should contain transparency score minimum constraint message"
-            );
-        }
-
-        @Test
-        @DisplayName("Should reject transparency score above 100.0")
-        void testTransparencyScoreTooHigh() {
-            // Arrange
-            productDTO.setProductName("Coffee");
-            productDTO.setDescription("High-quality product description here");
-            productDTO.setImageUrl("https://example.com/image.jpg");
-            productDTO.setBrand("Brand");
-            productDTO.setEthicalScore(85.0);
-            productDTO.setTransparencyScore(100.1);
-
-            // Act
-            Set<ConstraintViolation<ProductDTO>> violations = validator.validate(productDTO);
-
-            // Assert
-            assertFalse(violations.isEmpty(), "Transparency score above 100 should have violations");
-        }
-
-        @Test
-        @DisplayName("Should reject null ethical score")
-        void testNullEthicalScore() {
-            // Arrange
-            productDTO.setProductName("Coffee");
-            productDTO.setDescription("High-quality product description here");
-            productDTO.setImageUrl("https://example.com/image.jpg");
-            productDTO.setBrand("Brand");
-            productDTO.setEthicalScore(0); // Will be set to 0 due to primitive type
-            productDTO.setTransparencyScore(90.0);
-
-            // Note: Since ethicalScore is a double (primitive), it cannot be null
-
-            // Act & Assert
-            // This test demonstrates that primitive types cannot be null
-            assertTrue(productDTO.getEthicalScore() >= 0, "Primitive double cannot be null");
-        }
 
         @Test
         @DisplayName("Should reject null category")
@@ -938,8 +811,6 @@ class InputValidationTests {
             productDTO.setDescription("High-quality product description here");
             productDTO.setImageUrl("https://example.com/image.jpg");
             productDTO.setBrand("Brand");
-            productDTO.setEthicalScore(85.0);
-            productDTO.setTransparencyScore(90.0);
             productDTO.setCategory(null);
 
             // Act

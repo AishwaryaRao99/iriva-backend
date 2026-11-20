@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,16 +54,17 @@ public class ProfileService {
     @Transactional(readOnly = true)
     public List<ReviewDTO> getReviews(String loginIdentifier) {
         return reviewRepository.findByUserIdOrderByCreatedAtDesc(currentUser(loginIdentifier).getId()).stream()
-                .map(this::toReviewDTO).toList();
+                .map(review -> toReviewDTO(review, true)).toList();
     }
 
     @Transactional(readOnly = true)
-    public List<ReviewDTO> getProductReviews(Long productId) {
+    public List<ReviewDTO> getProductReviews(String loginIdentifier, @NonNull Long productId) {
         if (!productRepository.existsById(productId)) {
             throw new ProductNotFoundException("Product not found with id: " + productId);
         }
+        Long currentUserId = currentUser(loginIdentifier).getId();
         return reviewRepository.findByProductIdOrderByCreatedAtDesc(productId).stream()
-                .map(this::toReviewDTO).toList();
+                .map(review -> toReviewDTO(review, review.getUser().getId().equals(currentUserId))).toList();
     }
 
     @Transactional(readOnly = true)
@@ -72,7 +74,7 @@ public class ProfileService {
     }
 
     @Transactional
-    public boolean saveProduct(String loginIdentifier, Long productId) {
+    public boolean saveProduct(String loginIdentifier, @NonNull Long productId) {
         UserModel user = currentUser(loginIdentifier);
         ProductModel product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + productId));
@@ -87,7 +89,7 @@ public class ProfileService {
     }
 
     @Transactional(readOnly = true)
-    public boolean isProductSaved(String loginIdentifier, Long productId) {
+    public boolean isProductSaved(String loginIdentifier, @NonNull Long productId) {
         UserModel user = currentUser(loginIdentifier);
         if (!productRepository.existsById(productId)) {
             throw new ProductNotFoundException("Product not found with id: " + productId);
@@ -116,7 +118,7 @@ public class ProfileService {
         review.setComment(request.text().trim());
         review.setTags(normalizeTags(request));
         review.setCreatedAt(LocalDateTime.now());
-        return toReviewDTO(reviewRepository.save(review));
+        return toReviewDTO(reviewRepository.save(review), true);
     }
 
     @Transactional
@@ -126,11 +128,11 @@ public class ProfileService {
         review.setComment(request.text().trim());
         review.getTags().clear();
         review.getTags().addAll(normalizeTags(request));
-        return toReviewDTO(reviewRepository.save(review));
+        return toReviewDTO(reviewRepository.save(review), true);
     }
 
     @Transactional
-    public void deleteReview(String loginIdentifier, Long reviewId) {
+    public void deleteReview(@NonNull String loginIdentifier, @NonNull Long reviewId) {
         reviewRepository.delete(findOwnedReview(loginIdentifier, reviewId));
     }
 
@@ -150,10 +152,11 @@ public class ProfileService {
         return userService.getUserDetailsByUsernameOrEmail(loginIdentifier);
     }
 
-    private ReviewDTO toReviewDTO(Review review) {
+    private ReviewDTO toReviewDTO(Review review, boolean editable) {
         ProductModel product = review.getProduct();
         return new ReviewDTO(review.getId(), product.getProductName(), product.getBrand(), review.getRating(),
-                timeAgo(review.getCreatedAt()), review.getComment(), review.getTags(), product.getImageUrl());
+                timeAgo(review.getCreatedAt()), review.getComment(), review.getTags(), product.getImageUrl(),
+            displayName(review.getUser()), editable);
     }
 
     private String displayName(UserModel user) {

@@ -52,10 +52,10 @@
 │  │ ├─ description      │ │  └─ product (FK)                         │  │
 │  │ ├─ imageUrl         │ ├─ IngredientItemEntity (@OneToMany)       │  │
 │  │ ├─ brand            │ │  ├─ id, name, description, safetyStatus  │  │
-│  │ ├─ ethicalScore     │ │  └─ product (FK)                         │  │
-│  │ ├─ transparencyScore│ ├─ TransparencyAnalysisEntity (@OneToOne)  │  │
-│  │ ├─ category         │ │  ├─ id                                   │  │
-│  │ │                   │ │  ├─ scoreHighReasonsJson (CLOB)          │  │
+│  │ ├─ ingredientSafety │ │  └─ product (FK)                         │  │
+│  │ ├─ informationQuality│ ├─ TransparencyAnalysisEntity (@OneToOne) │  │
+│  │ ├─ evidenceQuality  │ │  ├─ id                                   │  │
+│  │ ├─ category         │ │  ├─ scoreHighReasonsJson (CLOB)          │  │
 │  │ │ NEW MAPPINGS:     │ │  ├─ improvementAreasJson (CLOB)          │  │
 │  │ ├─ ethicalSummary  │ │  └─ scoreBreakdown (FK @OneToOne)         │  │
 │  │ │  (@OneToMany)    │ └─ ScoreBreakdownEntity                     │  │
@@ -229,8 +229,9 @@ Products → TransparencyAnalysis: Lazy loaded on demand
 │ - description: String                            │
 │ - imageUrl: String                               │
 │ - brand: String                                  │
-│ - ethicalScore: double                           │
-│ - transparencyScore: double                      │
+│ - ingredientSafety: String                       │
+│ - informationQuality: String                     │
+│ - evidenceQuality: String                         │
 │ - category: ProductCategory                      │
 │ - ethicalSummary: List<EthicalItemEntity>        │ ◄─────┐
 │ - ingredients: List<IngredientItemEntity>        │ ◄─────┼─┐

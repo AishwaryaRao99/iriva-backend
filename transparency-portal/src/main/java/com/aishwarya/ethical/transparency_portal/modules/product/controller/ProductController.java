@@ -2,6 +2,7 @@ package com.aishwarya.ethical.transparency_portal.modules.product.controller;
 
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -80,8 +81,8 @@ public class ProductController {
 	 * Get reviews submitted by all users for a product.
 	 */
 	@GetMapping("/{id}/reviews")
-	public List<ReviewDTO> getProductReviews(@PathVariable Long id) {
-		return profileService.getProductReviews(id);
+	public List<ReviewDTO> getProductReviews(Authentication authentication, @PathVariable Long id) {
+		return profileService.getProductReviews(authentication.getName(), id);
 	}
 
 	@GetMapping("/{id}/review-tags")
@@ -127,74 +128,6 @@ public class ProductController {
 			@RequestParam String brand,
 			PageRequestDTO request) {
 		return productService.searchProductsByBrand(brand, request.getPage(), request.getSize(), request.getSortBy() ,  request.getSortDirection());
-	}
-
-	// ==================== SCORE-BASED FILTERING ====================
-
-	/**
-	 * Get products by ethical score range with pagination.
-	 */
-	@GetMapping("/filters/ethical-score-range")
-	public PageResponse<ProductDTO> getProductsByEthicalScoreRange(
-			@RequestParam Double minScore,
-			@RequestParam Double maxScore,
-			PageRequestDTO request) {
-		return productService.getProductsByEthicalScoreRange(minScore, maxScore, request.getPage(), request.getSize());
-	}
-
-	/**
-	 * Get products by transparency score range with pagination.
-	 */
-	@GetMapping("/filters/transparency-score-range")
-	public PageResponse<ProductDTO> getProductsByTransparencyScoreRange(
-			@RequestParam Double minScore,
-			@RequestParam Double maxScore,
-			PageRequestDTO request) {
-		return productService.getProductsByTransparencyScoreRange(minScore, maxScore, request.getPage(), request.getSize());
-	}
-
-	/**
-	 * Get products with high ethical score (above threshold).
-	 */
-	@GetMapping("/filters/high-ethical-score")
-	public PageResponse<ProductDTO> getHighEthicalScoreProducts(
-			@RequestParam Double minScore,
-			PageRequestDTO request) {
-		return productService.getHighEthicalScoreProducts(minScore, request.getPage(), request.getSize());
-	}
-
-	/**
-	 * Get products with high transparency score (above threshold).
-	 */
-	@GetMapping("/filters/high-transparency-score")
-	public PageResponse<ProductDTO> getHighTransparencyScoreProducts(
-			@RequestParam Double minScore,
-			PageRequestDTO request) {
-		return productService.getHighTransparencyScoreProducts(minScore, request.getPage(), request.getSize());
-	}
-
-	/**
-	 * Get products by both ethical and transparency score ranges.
-	 */
-	@GetMapping("/filters/score-range")
-	public PageResponse<ProductDTO> getProductsByScoreRange(
-			@RequestParam Double minEthicalScore,
-			@RequestParam Double maxEthicalScore,
-			@RequestParam Double minTransparencyScore,
-			@RequestParam Double maxTransparencyScore,
-			PageRequestDTO request) {
-		return productService.getProductsByScoreRange(minEthicalScore, maxEthicalScore, minTransparencyScore, maxTransparencyScore, request.getPage(), request.getSize());
-	}
-
-	/**
-	 * Get products by category and minimum ethical score.
-	 */
-	@GetMapping("/filters/category-and-ethical-score")
-	public PageResponse<ProductDTO> getProductsByCategoryAndEthicalScore(
-			@RequestParam String category,
-			@RequestParam Double minEthicalScore,
-			PageRequestDTO request) {
-		return productService.getProductsByCategoryAndEthicalScore(category, minEthicalScore, request.getPage(), request.getSize());
 	}
 
 	// ==================== ADVANCED FILTERING ====================
