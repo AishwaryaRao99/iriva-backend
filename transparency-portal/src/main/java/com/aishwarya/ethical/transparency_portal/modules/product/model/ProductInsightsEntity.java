@@ -1,5 +1,6 @@
 package com.aishwarya.ethical.transparency_portal.modules.product.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
@@ -25,16 +26,16 @@ public class ProductInsightsEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Lob
+	@Column(columnDefinition = "jsonb")
 	private String informationQualitySummary;
 
-	@Lob
+	@Column(columnDefinition = "jsonb")
 	private String evidenceQualitySummary;
 
-	@Lob
+	@Column(columnDefinition = "jsonb")
 	private String findingsJson;
 
-	@Lob
+	@Column(columnDefinition = "jsonb")
 	private String sourcesJson;
 
 	@OneToOne(fetch = FetchType.LAZY)
