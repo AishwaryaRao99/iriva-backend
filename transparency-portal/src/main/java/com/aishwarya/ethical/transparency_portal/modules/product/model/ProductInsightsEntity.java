@@ -26,10 +26,8 @@ public class ProductInsightsEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(columnDefinition = "jsonb")
 	private String informationQualitySummary;
 
-	@Column(columnDefinition = "jsonb")
 	private String evidenceQualitySummary;
 
 	@Column(columnDefinition = "jsonb")
