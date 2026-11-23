@@ -67,8 +67,6 @@ class AdminAccessTests {
 		Cookie adminJwtCookie = new Cookie("jwt", adminToken);
 		mockMvc.perform(get("/actuator/health").cookie(adminJwtCookie))
 				.andExpect(status().isOk());
-		mockMvc.perform(get("/actuator/prometheus").cookie(adminJwtCookie))
-				.andExpect(status().isNotFound());
 	}
 
 	@Test

@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,27 +34,25 @@ class JwtAuthenticationIntegrationTest {
 				""";
 
 		MvcResult loginResult = mockMvc
-				.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON).content(request))
+				.perform(post("/auth/login").with(csrf()).contentType(MediaType.APPLICATION_JSON).content(request))
 				.andExpect(status().isOk()).andExpect(cookie().exists("jwt")).andReturn();
 
 		Cookie jwtCookie = loginResult.getResponse().getCookie("jwt");
 
 		mockMvc.perform(get("/user/test").cookie(jwtCookie)).andExpect(status().isOk());
 	}
-	
+
 	@Test
 	void unauthorizedLogin() throws Exception {
 
-	    String request = """
-	        {
-	            "username":"john_doe",
-	            "password":"password235543"
-	        }
-	        """;
+		String request = """
+				{
+				    "username":"john_doe",
+				    "password":"password235543"
+				}
+				""";
 
-	    mockMvc.perform(post("/auth/login")
-	            .contentType(MediaType.APPLICATION_JSON)
-	            .content(request))
-	            .andExpect(status().is(401));
+		mockMvc.perform(post("/auth/login").with(csrf()).contentType(MediaType.APPLICATION_JSON).content(request))
+				.andExpect(status().is(401));
 	}
 }
