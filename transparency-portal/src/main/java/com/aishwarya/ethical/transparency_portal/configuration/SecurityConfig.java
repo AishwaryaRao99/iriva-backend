@@ -52,6 +52,11 @@ public class SecurityConfig {
 		        CookieCsrfTokenRepository.withHttpOnlyFalse();
 
 		csrfRepository.setCookiePath("/");
+		
+		csrfRepository.setCookieCustomizer(cookie -> cookie
+		        .sameSite("None")
+		        .secure(true)
+		);
 
 		http.csrf(csrf -> csrf.csrfTokenRepository(csrfRepository)
 				.csrfTokenRequestHandler(
@@ -141,7 +146,7 @@ public class SecurityConfig {
 	            List.of("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"));
 
 	    configuration.setAllowedHeaders(
-	            List.of("Authorization", "Content-Type", "Accept", "Origin"));
+	            List.of("Authorization", "Content-Type", "Accept", "Origin", "X-XSRF-TOKEN"));
 
 	    configuration.setAllowCredentials(true);
 
