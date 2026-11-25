@@ -27,34 +27,11 @@ public class SpaCsrfTokenRequestHandler implements CsrfTokenRequestHandler {
 		csrfToken.get();
 	}
 
-//	@Override
-//	public String resolveCsrfTokenValue(HttpServletRequest request, CsrfToken csrfToken) {
-//
-//		String headerValue = request.getHeader(csrfToken.getHeaderName());
-//
-//		// Resolve plain token from the request header
-//		if (StringUtils.hasText(headerValue)) {
-//			return this.plain.resolveCsrfTokenValue(request, csrfToken);
-//		}
-//
-//		// Resolve XOR-protected token from request parameters
-//		return this.xor.resolveCsrfTokenValue(request, csrfToken);
-//	}
-	
 	@Override
-	public String resolveCsrfTokenValue(
-	        HttpServletRequest request,
-	        CsrfToken csrfToken) {
+	public String resolveCsrfTokenValue(HttpServletRequest request, CsrfToken csrfToken) {
 
-	    String headerValue =
-	            request.getHeader(csrfToken.getHeaderName());
-
-	    if (StringUtils.hasText(headerValue)) {
-	        return this.plain.resolveCsrfTokenValue(
-	                request, csrfToken);
-	    }
-
-	    return this.xor.resolveCsrfTokenValue(
-	            request, csrfToken);
+		// Decode the XOR-masked token sent in the request header
+		return this.xor.resolveCsrfTokenValue(request, csrfToken);
 	}
+
 }
