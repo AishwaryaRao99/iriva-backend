@@ -2,9 +2,9 @@ package com.aishwarya.ethical.transparency_portal.configuration;
 
 import java.util.List;
 
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -16,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -24,7 +26,9 @@ import com.aishwarya.ethical.transparency_portal.security.JwtAuthenticationEntry
 import com.aishwarya.ethical.transparency_portal.security.JwtAuthenticationFilter;
 import com.aishwarya.ethical.transparency_portal.security.OAuth2SuccessHandler;
 import com.aishwarya.ethical.transparency_portal.security.SpaCsrfTokenRequestHandler;
-import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
@@ -57,8 +61,36 @@ public class SecurityConfig {
 		        .sameSite("None")
 		        .secure(true)
 		);
+		
+		CsrfTokenRepository loggingRepository = new CsrfTokenRepository() {
 
-		http.csrf(csrf -> csrf.csrfTokenRepository(csrfRepository)
+		    @Override
+		    public CsrfToken generateToken(HttpServletRequest request) {
+		        return csrfRepository.generateToken(request);
+		    }
+
+		    @Override
+		    public CsrfToken loadToken(HttpServletRequest request) {
+		        return csrfRepository.loadToken(request);
+		    }
+
+		    @Override
+		    public void saveToken(
+		            CsrfToken token,
+		            HttpServletRequest request,
+		            HttpServletResponse response) {
+
+		        if (token == null) {
+		            new RuntimeException(
+		                "CSRF TOKEN CLEARED - CALLER TRACE"
+		            ).printStackTrace();
+		        }
+
+		        csrfRepository.saveToken(token, request, response);
+		    }
+		};
+
+		http.csrf(csrf -> csrf.csrfTokenRepository(loggingRepository)
 				.csrfTokenRequestHandler(
 				        new SpaCsrfTokenRequestHandler())
 				        .ignoringRequestMatchers("/h2-console/**")
